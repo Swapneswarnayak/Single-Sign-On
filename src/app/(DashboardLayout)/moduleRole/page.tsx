@@ -184,6 +184,7 @@ const Page = () => {
                 <Select
                   onChange={(e) => handleFormChange("moduleId", e.target.value)}
                   size="small"
+                  value={formData.moduleId}
                 >
                   {moduleData.map((el: any) => (
                     <MenuItem value={el.moduleId}>{el.name}</MenuItem>
@@ -207,6 +208,7 @@ const Page = () => {
                 <Select
                   onChange={(e) => handleFormChange("roleId", e.target.value)}
                   size="small"
+                  value={formData.roleId}
                 >
                   {roleData.map((el: any) => (
                     <MenuItem value={el.roleId}>{el.name}</MenuItem>
@@ -216,7 +218,7 @@ const Page = () => {
             </Grid>
             <Grid mt={2.5} item lg={6} xs={6}>
               <Button
-                // disabled={!formData.name}
+                disabled={!formData.moduleId || !formData.roleId}
                 variant="contained"
                 onClick={handleSubmit}
               >
@@ -230,7 +232,7 @@ const Page = () => {
       <DashboardCard>
         <>
           <Typography variant="h4" fontWeight={"bold"} mb={3}>
-            List Of Role
+            List Of Module/Roles
           </Typography>
           <Box
             sx={{
