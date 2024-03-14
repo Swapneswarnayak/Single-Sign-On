@@ -110,8 +110,6 @@ function EmpLogin({ back }: any) {
     try {
       const res: any = await auth.signIn(email, password, captchaToken, capchaCode);
 
-      console.log(res, "RESP CAPCHA")
-
       if (res.success) {
         enqueueSnackbar(res?.message, {
           autoHideDuration: 3000,
@@ -123,22 +121,15 @@ function EmpLogin({ back }: any) {
           autoHideDuration: 3000,
           variant: "error",
         });
+        regenerateCaptcha()
       }
     } catch (error: any) {
       enqueueSnackbar(error?.message, {
         autoHideDuration: 3000,
         variant: "error",
       });
+      regenerateCaptcha()
     }
-
-    // else if (captchaText !== inputCaptcha) {
-    //   regenerateCaptcha();
-    //   enqueueSnackbar("Please Enter Correct Captcha", {
-    //     autoHideDuration: 3000,
-    //     variant: "error",
-    //   });
-    //   return;
-    // }
   };
 
   const handleMouseDownPassword = (
@@ -188,9 +179,8 @@ function EmpLogin({ back }: any) {
 
 
   useEffect(() => {
-    // generateCaptcha();
     getCaptcha();
-  }, []);
+  }, [auth?.user?.data?.token]);
 
   return (
     <Box>

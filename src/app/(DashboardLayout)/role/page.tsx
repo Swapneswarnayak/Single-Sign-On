@@ -5,8 +5,11 @@ import DashboardCard from "../components/shared/DashboardCard";
 import {
   Box,
   Button,
+  Dialog,
+  DialogContent,
   FormControl,
   Grid,
+  IconButton,
   MenuItem,
   Select,
   TextField,
@@ -18,6 +21,12 @@ import { useAuth } from "@/contexts/JWTContext/AuthContext.provider";
 import axios from "axios";
 import { BACKEND_BASE_URL } from "@/config";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import UpdateRole from "../components/forms/UpdateRole/UpdateRole";
+
+///ICONS
+import CloseIcon from '@mui/icons-material/Close';
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+
 
 const Page = () => {
   const auth: any = useAuth();
@@ -26,6 +35,12 @@ const Page = () => {
   });
   const [data, setData] = useState<any>([]);
   const [role, setRole] = useState<any>([]);
+  const [open, setOpen] = useState(false);
+  const [selectedroleData, setSelecteRole] = useState("");
+
+  const handleDialogClose: any = () => {
+    setOpen(false);
+  };
 
   const column: GridColDef[] = [
     {
@@ -38,23 +53,38 @@ const Page = () => {
       field: "name",
       headerName: "Name of Role",
       headerClassName: "super-app-theme--header",
-      width: 500,
+      width: 600,
     },
     {
       field: "role",
       headerName: "Status",
       headerClassName: "super-app-theme--header",
-      width: 400,
+      width: 150,
       renderCell: (row: any) => {
-       
         return (
           <Button
             onClick={() => handleStatus(row.row.roleId)}
             variant="contained"
-            color={!row.row.status?"error":"success"}
+            color={!row.row.status ? "error" : "success"}
           >
             {row.row.status ? "Active" : "Inactive"}
           </Button>
+        );
+      },
+    },
+    {
+      field: "update",
+      headerName: "Update Role",
+      headerClassName: "super-app-theme--header",
+      width: 150,
+      renderCell: (row: any) => {
+        return (
+          <IconButton
+            sx={{ ml: "10px" }}
+            onClick={() => handleEditRole(row.row)}
+          >
+            <ModeEditIcon />
+          </IconButton>
         );
       },
     },
@@ -83,6 +113,11 @@ const Page = () => {
         variant: "error",
       });
     }
+  };
+
+  const handleEditRole = async (roleData: any) => {
+    setOpen(true);
+    setSelecteRole(roleData);
   };
 
   const handleFormChange = (field: any, value: any) => {
@@ -117,6 +152,9 @@ const Page = () => {
     } catch (error) {
       console.error(error);
     }
+    setFormData({
+      name: "",
+    });
   };
 
   const getModuleList = async () => {
@@ -194,7 +232,7 @@ const Page = () => {
       <DashboardCard>
         <>
           <Typography variant="h4" fontWeight={"bold"} mb={3}>
-            List Of Role
+            List Of Roles
           </Typography>
           <Box
             sx={{
@@ -223,6 +261,13 @@ const Page = () => {
               disableRowSelectionOnClick
             />
           </Box>
+
+          <Dialog open={open} onClose={handleDialogClose}>
+            <Button onClick={handleDialogClose } variant="contained" sx={{position:"absolute", backgroundColor:"red", right:0, "&:hover":{backgroundColor:"red"}}}><CloseIcon/></Button>
+            <DialogContent>
+              <UpdateRole selectedRole={selectedroleData} />
+            </DialogContent>
+          </Dialog>
         </>
       </DashboardCard>
     </>

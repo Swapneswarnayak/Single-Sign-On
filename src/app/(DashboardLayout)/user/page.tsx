@@ -27,6 +27,9 @@ import { useRouter } from "next/navigation";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import UpdateUserForm from "../components/forms/UpdateUserForm/UpdateUserForm";
 
+import CloseIcon from '@mui/icons-material/Close';
+
+
 const User = () => {
   const auth: any = useAuth();
   const router = useRouter();
@@ -289,19 +292,6 @@ const User = () => {
           autoHideDuration: 3000,
           variant: "error",
         });
-
-        setFormData({
-          name: "",
-          email: "",
-          contactNumber: "",
-          designationId: "",
-          userModule: [
-            {
-              moduleId: "",
-              roleId: [],
-            },
-          ],
-        });
       }
     } catch (error: any) {
       console.error(error);
@@ -310,8 +300,19 @@ const User = () => {
         variant: "error",
       });
     }
+    setFormData({
+      name: "",
+      email: "",
+      contactNumber: "",
+      designationId: "",
+      userModule: [
+        {
+          moduleId: "",
+          roleId: [],
+        },
+      ],
+    });
   };
-
 
   useEffect(() => {
     getDes();
@@ -462,10 +463,10 @@ const User = () => {
                               <Select
                                 multiple
                                 value={userModule.roleId}
-                                onChange={(e: any) =>{
-                                  console.log(e.target.value, "EEEEEEEEEEEE")
-                                  handleChange(index, "roleId", e.target.value)}
-                                }
+                                onChange={(e: any) => {
+                                  console.log(e.target.value, "EEEEEEEEEEEE");
+                                  handleChange(index, "roleId", e.target.value);
+                                }}
                                 input={<OutlinedInput size="small" fullWidth />}
                                 inputProps={{ "aria-label": "Without label" }}
                               >
@@ -576,12 +577,27 @@ const User = () => {
               disableRowSelectionOnClick
             />
           </Box>
-          <Dialog  open={open} onClose={handleDialogClose}>
-            {/* {selectedUser && ( */}
-              <DialogContent>
-                <UpdateUserForm userData={selectedUser} des={des} moduleRole={moduleRole} />
-              </DialogContent>
-            {/* )} */}
+          <Dialog open={open} >
+            <Button
+              onClick={handleDialogClose}
+              variant="contained"
+              sx={{
+                position: "absolute",
+                backgroundColor: "red",
+                right: 0,
+                "&:hover": { backgroundColor: "red" },
+              }}
+            >
+              <CloseIcon />
+            </Button>
+
+            <DialogContent>
+              <UpdateUserForm
+                userData={selectedUser}
+                des={des}
+                moduleRole={moduleRole}
+              />
+            </DialogContent>
           </Dialog>
         </>
       </DashboardCard>

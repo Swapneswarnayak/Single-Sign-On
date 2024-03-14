@@ -45,12 +45,12 @@ const Page = () => {
       headerClassName: "super-app-theme--header",
       width: 400,
       renderCell: (row: any) => {
-       console.log(row,"ROW")
+        console.log(row, "ROW");
         return (
           <Button
             onClick={() => handleStatus(row.row.roleId)}
             variant="contained"
-            color={!row.row.status?"error":"success"}
+            color={!row.row.status ? "error" : "success"}
           >
             {row.row.status ? "Active" : "Inactive"}
           </Button>
@@ -112,23 +112,21 @@ const Page = () => {
           autoHideDuration: 3000,
           variant: "success",
         });
-        setFormData({
-          name: "",
-        })
-        getDes()
-      }
 
-    
-    } catch (error:any) {
+        getDes();
+      }
+    } catch (error: any) {
       console.error(error);
       enqueueSnackbar(error?.message, {
         autoHideDuration: 3000,
         variant: "success",
       });
     }
+    setFormData({
+      name: "",
+    });
   };
 
- 
   const getDes = async () => {
     const config = {
       url: `/api/v1/designation`,
@@ -150,7 +148,6 @@ const Page = () => {
   };
 
   useEffect(() => {
-   
     getDes();
   }, [auth?.user?.data?.token]);
 
@@ -172,6 +169,7 @@ const Page = () => {
                   placeholder="Enter Designation"
                   size="small"
                   name="name"
+                  value={formData.name}
                   onChange={(e) => handleFormChange("name", e.target.value)}
                   fullWidth
                 />
