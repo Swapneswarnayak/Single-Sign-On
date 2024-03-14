@@ -106,7 +106,7 @@ const page = () => {
 
   useEffect(() => {
     getModuleList();
-  }, [auth.user.token]);
+  }, [auth.user]);
 
   return (
     <DashboardCard>

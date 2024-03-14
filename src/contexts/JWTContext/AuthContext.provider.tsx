@@ -47,7 +47,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   const [state, dispatch] = useReducer(AuthReducer, initialState);
   const router = useRouter();
   const path = usePathname();
-  console.log(path, "path");
 
   const logoutTimer = useRef<NodeJS.Timeout | null>(null); // Define logoutTimer
 
@@ -68,6 +67,13 @@ export default function AuthProvider({ children }: AuthProviderProps) {
           });
           if (path == "/") {
             router.push("/dashboard");
+          }
+          if (localStorage.getItem("sessionObj")) {
+            const sessionObject = JSON.parse(
+              localStorage.getItem("sessionObj") || ""
+            );
+            console.log(sessionObject, "object");
+            checkSessionExist(sessionObject);
           }
 
           // Start the logout timer when user is authenticated
@@ -98,12 +104,21 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     initialize();
   }, []);
 
-  // const resetLogoutTimer = () => {
-  //   if (logoutTimer.current) {
-  //     clearTimeout(logoutTimer.current);
-  //     startLogoutTimer();
-  //   }
-  // };
+  const checkSessionExist = async (xml: any) => {
+    try {
+      const response = await axios.get(
+        `/api/v1/user/session/${xml?.sessionid}`
+      );
+      if (response.data.data != null) {
+        router.push(xml?.link);
+      } else {
+        localStorage.removeItem("sessionObj");
+      }
+      console.log(response, "response from check session");
+    } catch (err: any) {
+      console.log(err, "error");
+    }
+  };
 
   const signIn = async (
     user_name: any,
@@ -111,6 +126,14 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     capchaToken: any,
     capchaCode: any
   ) => {
+    dispatch({
+      type: INITIALIZE,
+      payload: {
+        isAuthenticated: false,
+        user: null,
+        loading: true,
+      },
+    });
     try {
       let endpoint = `${BACKEND_BASE_URL}/api/v1/user/login`;
 
@@ -138,6 +161,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         payload: {
           user: user,
           isAuthenticated: true,
+          loading: false,
         },
       });
       if (response.data.success) {
@@ -152,7 +176,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   };
 
   const signOut = () => {
-    localStorage.removeItem("login");
+    localStorage.clear();
     dispatch({ type: SIGN_OUT });
     router.push("/");
   };
