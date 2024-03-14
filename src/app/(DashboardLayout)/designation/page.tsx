@@ -5,8 +5,11 @@ import DashboardCard from "../components/shared/DashboardCard";
 import {
   Box,
   Button,
+  Dialog,
+  DialogContent,
   FormControl,
   Grid,
+  IconButton,
   MenuItem,
   Select,
   TextField,
@@ -19,12 +22,25 @@ import axios from "axios";
 import { BACKEND_BASE_URL } from "@/config";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 
+import UpdateDes from "../components/forms/UpdateDesignation/UpdateDesignation";
+
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import CloseIcon from "@mui/icons-material/Close";
+
 const Page = () => {
   const auth: any = useAuth();
   const [formData, setFormData] = useState<any>({
     name: "",
   });
   const [designation, setDesgination] = useState<any>([]);
+
+  const [role, setRole] = useState<any>([]);
+  const [open, setOpen] = useState(false);
+  const [selectedDesData, setSelectedDesData] = useState("");
+
+  const handleDialogClose: any = () => {
+    setOpen(false);
+  };
 
   const column: GridColDef[] = [
     {
@@ -37,18 +53,17 @@ const Page = () => {
       field: "name",
       headerName: "Name of Role",
       headerClassName: "super-app-theme--header",
-      width: 500,
+      width: 600,
     },
     {
       field: "role",
       headerName: "Status",
       headerClassName: "super-app-theme--header",
-      width: 400,
+      width: 150,
       renderCell: (row: any) => {
-        console.log(row, "ROW");
         return (
           <Button
-            onClick={() => handleStatus(row.row.roleId)}
+            onClick={() => handleStatus(row.row.designationId)}
             variant="contained"
             color={!row.row.status ? "error" : "success"}
           >
@@ -57,29 +72,61 @@ const Page = () => {
         );
       },
     },
+    {
+      field: "update",
+      headerName: "Update Role",
+      headerClassName: "super-app-theme--header",
+      width: 150,
+      renderCell: (row: any) => {
+        return (
+          <IconButton
+            sx={{ ml: "10px" }}
+            onClick={() => handleEditDesignation(row.row)}
+          >
+            <ModeEditIcon />
+          </IconButton>
+        );
+      },
+    },
   ];
+  const handleEditDesignation = async (roleData: any) => {
+    setOpen(true);
+    setSelectedDesData(roleData);
+  };
 
   const handleStatus = async (id: any) => {
     const config = {
-      url: `/api/v1/role/${id}`,
+      url: `/api/v1/designation/${id}`,
       method: "PATCH",
       headers: {
         // "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${auth?.user?.data?.token}`,
       },
     };
-    let res = await axiosApi(config.url, config.method, config.headers);
 
-    if (res) {
-      enqueueSnackbar(res.message, {
-        autoHideDuration: 3000,
-        variant: "success",
-      });
-      getDes();
-    } else {
-      enqueueSnackbar(res.message, {
+    try {
+      let res = await axiosApi(config.url, config.method, config.headers);
+
+      console.log(res, "RES FOR DESIG");
+      if (res) {
+        enqueueSnackbar(res.message, {
+          autoHideDuration: 3000,
+          variant: "success",
+          // preventDuplicate:true
+        });
+        getDes();
+      } else {
+        enqueueSnackbar(res.message, {
+          autoHideDuration: 3000,
+          variant: "error",
+          // preventDuplicate:true
+        });
+      }
+    } catch (error:any) {
+      enqueueSnackbar(error.message, {
         autoHideDuration: 3000,
         variant: "error",
+        // preventDuplicate:true
       });
     }
   };
@@ -137,7 +184,6 @@ const Page = () => {
       },
     };
     try {
-      // const res = await axios.get(`${BACKEND_BASE_URL}/api/v1/role`);
       let res = await axiosApi(config.url, config.method, config.headers);
 
       const resData = res.data.map((e: any, i: any) => ({ ...e, id: i + 1 }));
@@ -221,6 +267,28 @@ const Page = () => {
               disableRowSelectionOnClick
             />
           </Box>
+
+          <Dialog open={open} onClose={handleDialogClose}>
+            <Button
+              onClick={handleDialogClose}
+              variant="contained"
+              sx={{
+                position: "absolute",
+                backgroundColor: "red",
+                right: 0,
+                "&:hover": { backgroundColor: "red" },
+              }}
+            >
+              <CloseIcon />
+            </Button>
+            <DialogContent>
+              <UpdateDes
+                selectedDesData={selectedDesData}
+                updateFn={getDes}
+                close={handleDialogClose}
+              />
+            </DialogContent>
+          </Dialog>
         </>
       </DashboardCard>
     </>

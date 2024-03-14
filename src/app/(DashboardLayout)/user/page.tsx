@@ -318,7 +318,7 @@ const User = () => {
     getDes();
     getMdouleRole();
     getAllUsers();
-  }, [auth?.user?.data?.token, open]);
+  }, [auth?.user?.data?.token]);
 
   return (
     <>
