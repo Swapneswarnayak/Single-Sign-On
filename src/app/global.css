@@ -1,0 +1,5 @@
+.captcha-svg {
+    user-select: none; /* Disable text selection */
+    -webkit-touch-callout: none; /* Disable touch callout */
+    -webkit-tap-highlight-color: transparent; /* Disable tap highlight */
+  }

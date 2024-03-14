@@ -1,0 +1,43 @@
+@startuml tyr
+class NextApp {
+  + render(): JSX.Element
+}
+
+class Layout {
+  - topnav: JSX.Element
+  - midnav: JSX.Element
+  - bottomnav: JSX.Element
+  - main: JSX.Element
+  - footer: JSX.Element
+  + render(): JSX.Element
+}
+
+class HomePage {
+  + getInitialProps(): Promise<any>
+  + render(): JSX.Element
+}
+
+class AboutPage {
+  + getInitialProps(): Promise<any>
+  + render(): JSX.Element
+}
+
+class ContactPage {
+  + getInitialProps(): Promise<any>
+  + render(): JSX.Element
+}
+
+class ExaminationPage {
+  + getInitialProps(): Promise<any>
+  + render(): JSX.Element
+}
+
+NextApp --> Layout
+NextApp --> HomePage
+NextApp --> AboutPage
+NextApp --> ContactPage
+Layout -- HomePage
+Layout -- AboutPage
+Layout -- ContactPage
+Layout -- ExaminationPage
+@enduml
