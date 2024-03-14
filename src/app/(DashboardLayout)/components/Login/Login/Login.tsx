@@ -29,12 +29,51 @@ import { enqueueSnackbar } from "notistack";
 import svgCaptcha from "svg-captcha";
 import axiosApi from "@/utils/axiosApi";
 
+const Heading1 = styled(Typography)(({ theme }: any) => ({
+  padding: theme.spacing(1),
+  color: "black",
+  fontFamily: "Nunito, sans-serif",
+  lineHeight: "41.72px",
+  fontWeight: 700,
+}));
+
+const LoginButton = styled(Button)`
+  width: auto;
+  height: auto;
+
+  background: #e15a11;
+  font-weight: 600;
+  font-family: "Nunito", sans-serif;
+  font-size: 20px;
+  box-shadow: 0px 0px 19px -10px rgba(215, 215, 215, 0.25);
+  color: white;
+  &:hover {
+    background-color: #e15a11;
+  }
+`;
+
+const ResendOTP = styled(Typography)`
+  width: 150px;
+  height: 22px;
+  font-family: "Nunito", sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 10px;
+  line-height: 22px;
+  text-decoration-line: underline;
+  color: #1e88e5;
+  cursor: pointer;
+  margin: auto;
+  text-align: center;
+  justify-content: center;
+`;
+
 const emailValidationRegex = /^[\w-\\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const mobileValidationRegex =
   /^((\+*)((0[ -]*)*|((91 )*))((\d{12})+|(\d{10})+))|\d{5}([- ]*)\d{6}$/;
 
 function EmpLogin({ back }: any) {
-  const auth:any = useAuth();
+  const auth: any = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState<number>();
   const [inputCaptcha, setInputCaptcha] = useState<any>("");
@@ -45,6 +84,9 @@ function EmpLogin({ back }: any) {
   const [showPassword, setShowPassword] = useState(false);
   const [captchaText, setCaptchaText] = useState("");
 
+  const [captchaSvg, setCaptchaSvg] = useState("");
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [capchaCode,setCapchaCode]=useState("")
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
@@ -55,80 +97,49 @@ function EmpLogin({ back }: any) {
   //   SetCaptchaCode(Math.random().toString(36).substr(2, 6));
   // }, []);
 
-
-
   const loginUser = async () => {
-    if (password == "" || inputCaptcha == "") {
-      regenerateCaptcha()
+    if (password == "" || capchaCode == "") {
+      regenerateCaptcha();
 
       enqueueSnackbar("Please fill all fields", {
         autoHideDuration: 3000,
         variant: "error",
       });
       return;
-    } else if (captchaText !== inputCaptcha) {
-      
-      regenerateCaptcha()
-      enqueueSnackbar("Please Enter Correct Captcha", {
+    }
+    try {
+      const res: any = await auth.signIn(email, password, captchaToken, capchaCode);
+
+      console.log(res, "RESP CAPCHA")
+
+      if (res.success) {
+        enqueueSnackbar(res?.message, {
+          autoHideDuration: 3000,
+          variant: "success",
+        });
+      }
+      else if(!res.status){
+        enqueueSnackbar(res?.message, {
+          autoHideDuration: 3000,
+          variant: "error",
+        });
+      }
+    } catch (error: any) {
+      enqueueSnackbar(error?.message, {
         autoHideDuration: 3000,
         variant: "error",
       });
-      return;
     }
 
-    const res: any = await auth.signIn(email, password);
-
-    if (res.success) {
-      enqueueSnackbar(res?.message, {
-        autoHideDuration: 3000,
-        variant: "success",
-      });
-    } else {
-      enqueueSnackbar("Please try to login with correct credentials", {
-        autoHideDuration: 3000,
-        variant: "error",
-      });
-    }
+    // else if (captchaText !== inputCaptcha) {
+    //   regenerateCaptcha();
+    //   enqueueSnackbar("Please Enter Correct Captcha", {
+    //     autoHideDuration: 3000,
+    //     variant: "error",
+    //   });
+    //   return;
+    // }
   };
-
-  const Heading1 = styled(Typography)(({ theme }: any) => ({
-    padding: theme.spacing(1),
-    color: "black",
-    fontFamily: "Nunito, sans-serif",
-    lineHeight: "41.72px",
-    fontWeight: 700,
-  }));
-
-  const LoginButton = styled(Button)`
-    width: auto;
-    height: auto;
-
-    background: #e15a11;
-    font-weight: 600;
-    font-family: "Nunito", sans-serif;
-    font-size: 20px;
-    box-shadow: 0px 0px 19px -10px rgba(215, 215, 215, 0.25);
-    color: white;
-    &:hover {
-      background-color: #e15a11;
-    }
-  `;
-
-  const ResendOTP = styled(Typography)`
-    width: 150px;
-    height: 22px;
-    font-family: "Nunito", sans-serif;
-    font-style: normal;
-    font-weight: 700;
-    font-size: 10px;
-    line-height: 22px;
-    text-decoration-line: underline;
-    color: #1e88e5;
-    cursor: pointer;
-    margin: auto;
-    text-align: center;
-    justify-content: center;
-  `;
 
   const handleMouseDownPassword = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -136,6 +147,31 @@ function EmpLogin({ back }: any) {
     event.preventDefault();
   };
 
+  const getCaptcha = async () => {
+    const config = {
+      url: `/api/v1/user/captcha`,
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${auth?.user?.data?.token}`,
+      },
+    };
+    try {
+      let res: any = await axiosApi(config.url, config.method, config.headers);
+
+      setCaptchaSvg(res.data.svg);
+      setCaptchaToken(res.data.token);
+    } catch (error) {
+      console.error(error, "CAPCHA ERROR");
+    }
+  };
+
+  const refreshCaptcha = () => {
+    getCaptcha(); // Call getCaptcha to fetch a new captcha
+  };
+
+  function regenerateCaptcha() {
+    setCaptchaText(generateCaptcha());
+  }
 
   function generateCaptcha() {
     const characters =
@@ -150,36 +186,10 @@ function EmpLogin({ back }: any) {
     return captcha;
   }
 
-  function regenerateCaptcha() {
-    setCaptchaText(generateCaptcha());
-  }
-
- 
-
-
-  const getCapcha = async () => {
-    const config = {
-      url: `/api/v1/user/capcha`,
-      method: "GET",
-      headers: {
-        // "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${auth?.user?.data?.token}`,
-      },
-    };
-    try {
-      let res: any = await axiosApi(config.url, config.method, config.headers);
-
-
-      console.log(res," CAPCHA RESSSSSSSSSSSSs")
-    
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   useEffect(() => {
-    generateCaptcha();
-    // getCapcha()
+    // generateCaptcha();
+    getCaptcha();
   }, []);
 
   return (
@@ -325,6 +335,38 @@ function EmpLogin({ back }: any) {
               mt: "20px",
             }}
           >
+            <Box
+              sx={{
+                width: "40%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-around",
+              }}
+            >
+              <Box
+                sx={{
+                  fontWeight: 600,
+                  height: "100%",
+                  width: "100%",
+                  backgroundColor: "white",
+                  // color: "white",
+                  borderRadius: "4px",
+                  cursor: "not-allowed",
+                }}
+              >
+                <div dangerouslySetInnerHTML={{ __html: captchaSvg }}></div>
+              </Box>
+              <Tooltip title="Refresh Captcha">
+                <RefreshIcon
+                  onClick={refreshCaptcha}
+                  sx={{
+                    fontSize: "33px",
+                    color: "#E15A11",
+                    cursor: "pointer",
+                  }}
+                />
+              </Tooltip>
+            </Box>
             <TextField
               id="outlined-basic"
               placeholder="Enter Captcha"
@@ -344,96 +386,20 @@ function EmpLogin({ back }: any) {
                   // handleLogin()
                 }
               }}
-              value={inputCaptcha}
+              value={capchaCode}
               sx={{ width: "55%", background: "white" }}
               onChange={(event: any) => {
-                setInputCaptcha(event.target.value);
+                setCapchaCode(event.target.value);
               }}
               inputProps={{
                 style: {
-                  height: "45px",
-                  padding: "0 14px",
+                  // height: "45px",
+                  // padding: "0 14px",
                 },
               }}
             ></TextField>
-
-            <Box
-              sx={{
-                width: "40%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-around",
-              }}
-            >
-              <Box
-                sx={{
-                  fontWeight: 600,
-                  height: "100%",
-                  width: "100%",
-                  backgroundColor: "grey",
-                  color: "white",
-                  borderRadius: "4px",
-                  cursor: "not-allowed",
-                }}
-              >
-                {/* <Typography
-                  variant="body1"
-                  sx={{
-                    fontWeight: 600,
-                    p: 1.2,
-                    fontSize: "20px",
-                    width: "fit-content",
-                    margin: "auto",
-                    height: "45px",
-                    color: "white",
-                    borderRadius: "4px",
-                    cursor: "not-allowed",
-                  }}
-                  fontFamily="Nunito"
-                >
-                  {captchaCode}
-                </Typography> */}
-
-                <svg
-                  width="190"
-                  height="40"
-                  style={{
-                    userSelect: "none",
-                  }}
-                >
-                  <rect width="100%" height="100%" fill="white" />
-                  {captchaText.split("").map((char, index) => (
-                    <text
-                      key={index}
-                      x={index * 30 + 15}
-                      y="30"
-                      fontSize="22"
-                      fill="black"
-                      transform={`rotate(${Math.random() * 20 - 10} ${
-                        index * 30 + 15
-                      } 50)`}
-
-                   
-                    >
-                      {/* <tspan  x={index * 30 + 15} dy="0"> */}
-                        {char}
-                      {/* </tspan> */}
-                    </text>
-                  ))}
-                </svg>
-              </Box>
-              <Tooltip title="Refresh Captcha">
-                <RefreshIcon
-                  onClick={regenerateCaptcha}
-                  sx={{
-                    fontSize: "33px",
-                    color: "#E15A11",
-                    cursor: "pointer",
-                  }}
-                />
-              </Tooltip>
-            </Box>
           </Box>
+
           <LoginButton
             onClick={loginUser}
             size="small"

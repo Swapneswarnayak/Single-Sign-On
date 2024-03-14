@@ -6,7 +6,7 @@ import React, {
   useMemo,
   useRef,
 } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import axios from "../../config/axios";
 import { isValidToken, setSession } from "../../utils/jwt";
 import AuthReducer from "./AuthContext.reducer";
@@ -46,6 +46,8 @@ export const useAuth = () => React.useContext(AuthContext);
 export default function AuthProvider({ children }: AuthProviderProps) {
   const [state, dispatch] = useReducer(AuthReducer, initialState);
   const router = useRouter();
+  const path = usePathname();
+  console.log(path, "path");
 
   const logoutTimer = useRef<NodeJS.Timeout | null>(null); // Define logoutTimer
 
@@ -64,6 +66,10 @@ export default function AuthProvider({ children }: AuthProviderProps) {
               user: info,
             },
           });
+          if (path == "/") {
+            router.push("/dashboard");
+          }
+
           // Start the logout timer when user is authenticated
           // startLogoutTimer();
         } else {
@@ -75,6 +81,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
               user: null,
             },
           });
+          router.push("/");
         }
       } catch (err) {
         dispatch({
@@ -84,6 +91,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
             user: null,
           },
         });
+        router.push("/");
       }
     };
 
@@ -97,21 +105,26 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   //   }
   // };
 
-  const signIn = async (user_name: any, password: any) => {
-
-
+  const signIn = async (
+    user_name: any,
+    password: any,
+    capchaToken: any,
+    capchaCode: any
+  ) => {
     try {
-      let endpoint  = `${BACKEND_BASE_URL}/api/v1/user/login`;
+      let endpoint = `${BACKEND_BASE_URL}/api/v1/user/login`;
 
       const response = await axios.post(
         endpoint,
         {
           email: user_name,
           password: password,
+          captcha: capchaCode,
         },
         {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${capchaToken}`,
           },
         }
       );
@@ -119,7 +132,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       const user = response.data;
       localStorage.setItem("login", JSON.stringify(user));
 
-      console.log(response,"RESPO")
+      console.log(response, "RESPO");
       dispatch({
         type: SIGN_IN,
         payload: {
@@ -127,15 +140,14 @@ export default function AuthProvider({ children }: AuthProviderProps) {
           isAuthenticated: true,
         },
       });
-      if(response.data.success){
+      if (response.data.success) {
         router.push("/dashboard");
       }
       // resetLogoutTimer();
       return user;
     } catch (err: any) {
       console.error("Error occurred:", err);
-        return err;
-    
+      return err;
     }
   };
 

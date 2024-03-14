@@ -9,6 +9,7 @@ const AuthReducer = (state: any, action: any) => {
         isAuthenticated: action.payload.isAuthenticated,
         isInitialized: true,
         user: action.payload.user,
+        loading:true
       };
     case SIGN_IN:
       return {
