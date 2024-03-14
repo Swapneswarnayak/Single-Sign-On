@@ -8,7 +8,7 @@ import {
   Grid,
   TextField,
   Typography,
-  Chip
+  Chip,
 } from "@mui/material";
 import axiosApi from "@/utils/axiosApi";
 import { enqueueSnackbar } from "notistack";
@@ -16,7 +16,6 @@ import { useAuth } from "@/contexts/JWTContext/AuthContext.provider";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import axios from "axios";
 import { BACKEND_BASE_URL } from "@/config";
-
 
 const page = () => {
   const auth: any = useAuth();
@@ -38,7 +37,7 @@ const page = () => {
       field: "name",
       headerName: "Name of Module",
       headerClassName: "super-app-theme--header",
-      width:500,
+      width: 500,
     },
     {
       field: "status",
@@ -47,7 +46,11 @@ const page = () => {
       width: 400,
 
       renderCell: (rows) => {
-        return rows.row.status ? <Chip color="success" label="Active" />:<Chip color="error" label="Inactive"/>
+        return rows.row.status ? (
+          <Chip color="success" label="Active" />
+        ) : (
+          <Chip color="error" label="Inactive" />
+        );
       },
     },
   ];
@@ -97,10 +100,9 @@ const page = () => {
     setRows(rowData);
   };
 
-
   useEffect(() => {
     getModuleList();
-  }, [auth.user.token]);
+  }, [auth.user]);
 
   return (
     <DashboardCard>
