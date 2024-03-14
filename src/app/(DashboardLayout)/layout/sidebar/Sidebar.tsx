@@ -21,7 +21,7 @@ const Sidebar = ({
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
 
   const [roleNum, setRoleNum] = useState([]);
-  const sidebarWidth = "290px";
+  const sidebarWidth = "250px";
 
   const auth: any = useAuth();
 
@@ -35,7 +35,7 @@ const Sidebar = ({
     return (
       <Box
         sx={{
-          width: sidebarWidth,
+          width: {xs:sidebarWidth, md: "250px"},
           flexShrink: 0,
         }}
       >
@@ -45,7 +45,7 @@ const Sidebar = ({
           variant="permanent"
           PaperProps={{
             sx: {
-              width: sidebarWidth,
+              width: {xs:sidebarWidth, md: "250px"},
               boxSizing: "border-box",
             },
           }}
@@ -92,33 +92,14 @@ const Sidebar = ({
       {/* ------------------------------------------- */}
       {/* Logo */}
       {/* ------------------------------------------- */}
-      {role ? (
+  
         <Box px={2}>
           <Box textAlign={"center"} marginY={2} px={3}>
-            <h2>Online Medical Bills</h2>
-            {/* <h3>{"( U P S C )"}</h3> */}
-            <h3>ADMIN PANEL</h3>
-
-            <Box>
-              You Logged In as:
-              <Typography sx={{}}>{"Diary Entry - Admin IV"}</Typography>
-            </Box>
+            <h3>Single Sign On PANEL</h3>
+            <h3>Super Admin</h3>
           </Box>
         </Box>
-      ) : (
-        <Box px={2}>
-          <Box textAlign={"center"} marginY={2} px={3}>
-            <h2>Online Medical Bills</h2>
-            {/* <h3>{"( U P S C )"}</h3> */}
-            <h3>Employee Panel</h3>
-
-            <Box>
-              You Logged In as:
-              <Typography sx={{}}>{"Employee"}</Typography>
-            </Box>
-          </Box>
-        </Box>
-      )}
+    
 
       {/* ------------------------------------------- */}
       {/* Sidebar For Mobile */}

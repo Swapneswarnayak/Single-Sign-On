@@ -121,6 +121,7 @@ const page = () => {
             </Typography>
             {/* <Asterisk /> */}
             <TextField
+            placeholder="Enter name"
               value={formData.name}
               size="small"
               onChange={(e: any) => handleFormChange("name", e.target.value)}
@@ -137,6 +138,7 @@ const page = () => {
             {/* <Asterisk /> */}
             <TextField
               value={formData.loginLink}
+              placeholder="Module URL"
               onChange={(e: any) =>
                 handleFormChange("loginLink", e.target.value)
               }

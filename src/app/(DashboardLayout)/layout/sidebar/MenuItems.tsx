@@ -4,6 +4,8 @@ import { uniqueId } from "lodash";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PersonIcon from "@mui/icons-material/Person";
 import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+
 const Menuitems: any =  [
       {
         id: uniqueId(),
@@ -25,14 +27,14 @@ const Menuitems: any =  [
       },
       {
         id: uniqueId(),
-        title: "Module Role Create",
-        icon: PersonIcon,
+        title: "Module/Role Create",
+        icon: PersonAddIcon,
         href: "/moduleRole",
       },
       {
         id: uniqueId(),
-        title: "User",
-        icon: PersonAddIcon,
+        title: "Create User",
+        icon: AdminPanelSettingsIcon,
         href: "/user",
       },
       {
