@@ -18,6 +18,7 @@ import axios from "axios";
 import { BACKEND_BASE_URL } from "@/config";
 import SimpleSlide from "../components/SimpleSlide/SimpleSlide";
 import AdminDashboard from "../components/AdminDashboard/AdminDashboard";
+import Image from "next/image";
 
 const Dashboard = () => {
   const auth: any = useAuth();
@@ -48,6 +49,14 @@ const Dashboard = () => {
   //   getModuleList();
   //   getRoleList()
   // },[])
+  console.log(loginRole, "dashRole");
+  if (loginRole == undefined) {
+    return (
+      <Box sx={{ width: "fit-content", margin: "10% auto" }}>
+        <img src="./Spin.gif" alt="Loader" />
+      </Box>
+    );
+  }
 
   return (
     <Box>
