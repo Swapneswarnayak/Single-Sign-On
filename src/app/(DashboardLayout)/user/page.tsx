@@ -393,8 +393,8 @@ const User = () => {
                     fullWidth
                     size="small"
                   >
-                    {des.map((element: any) => (
-                      <MenuItem value={element.designationId}>
+                    {des.map((element: any,i:any) => (
+                      <MenuItem key={i} value={element.designationId}>
                         {element.name}
                       </MenuItem>
                     ))}

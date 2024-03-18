@@ -17,7 +17,7 @@ import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import axios from "axios";
 import { BACKEND_BASE_URL } from "@/config";
 
-const page = () => {
+const Page = () => {
   const auth: any = useAuth();
   const [formData, setFormData] = useState({
     name: "",
@@ -196,4 +196,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
