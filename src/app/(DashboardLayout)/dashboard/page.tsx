@@ -28,27 +28,6 @@ const Dashboard = () => {
 
   const loginRole: any = auth?.user?.data?.role;
 
-  // const getModuleList = async () => {
-  //   try {
-  //     const res = await axios.get(`${BACKEND_BASE_URL}/api/v1/module/module-role-list`);
-  //     setData(res?.data?.data);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-  // const getRoleList = async () => {
-  //   try {
-  //     const res = await axios.get(`${BACKEND_BASE_URL}/api/v1/role`);
-  //     setRoleList(res?.data?.data);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-  // useEffect(()=>{
-  //   getModuleList();
-  //   getRoleList()
-  // },[])
-
   return (
     <Box>
       <>

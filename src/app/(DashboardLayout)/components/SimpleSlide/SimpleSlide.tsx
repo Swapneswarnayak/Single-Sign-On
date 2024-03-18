@@ -22,11 +22,6 @@ export default function SimpleSlide() {
 
   const tokenStr: any = auth.user?.data;
 
-  console.log(auth, "auth");
-
-  React.useEffect(() => {
-    getModuleandRoles();
-  }, [tokenStr]);
 
   const getModuleandRoles = async () => {
     try {
@@ -36,7 +31,6 @@ export default function SimpleSlide() {
           headers: { Authorization: `Bearer ${tokenStr.token}` },
         }
       );
-      console.log(module.data.data, "mod");
       setModuleList(module.data.data);
     } catch (err: any) {
       console.log(err);
@@ -87,7 +81,12 @@ export default function SimpleSlide() {
 
     console.log("running2");
   };
-  console.log(moduleList, "List");
+ 
+
+  React.useEffect(() => {
+    getModuleandRoles();
+  }, [tokenStr]);
+
   return (
     <Box
       sx={{
@@ -144,7 +143,6 @@ export default function SimpleSlide() {
                           <Button
                             size="small"
                             onClick={async () => {
-                              console.log("started");
                               handleClickRole(
                                 el2.name,
                                 el.loginLink,

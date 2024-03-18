@@ -18,9 +18,12 @@ import { useAuth } from "@/contexts/JWTContext/AuthContext.provider";
 import axios from "axios";
 import { BACKEND_BASE_URL } from "@/config";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
   const auth: any = useAuth();
+  const router = useRouter()
+
   const [formData, setFormData] = useState<any>({
     moduleId: "",
     roleId: "",
@@ -93,7 +96,8 @@ const Page = () => {
           autoHideDuration: 3000,
           variant: "success",
         });
-        getModuleRole();
+        // getModuleRole();
+        router.refresh()
       }
     } catch (error) {
       console.error(error);

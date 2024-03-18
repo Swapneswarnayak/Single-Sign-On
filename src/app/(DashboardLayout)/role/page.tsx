@@ -26,10 +26,13 @@ import UpdateRole from "../components/forms/UpdateRole/UpdateRole";
 ///ICONS
 import CloseIcon from '@mui/icons-material/Close';
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import { useRouter } from "next/navigation";
 
 
 const Page = () => {
   const auth: any = useAuth();
+  const router = useRouter()
+  
   const [formData, setFormData] = useState<any>({
     name: "",
   });
@@ -106,7 +109,8 @@ const Page = () => {
         autoHideDuration: 3000,
         variant: "success",
       });
-      getRole();
+      // getRole();
+      router.refresh()
     } else {
       enqueueSnackbar(res.message, {
         autoHideDuration: 3000,

@@ -284,7 +284,6 @@ const Page = () => {
             <DialogContent>
               <UpdateDes
                 selectedDesData={selectedDesData}
-                updateFn={getDes}
                 close={handleDialogClose}
               />
             </DialogContent>
