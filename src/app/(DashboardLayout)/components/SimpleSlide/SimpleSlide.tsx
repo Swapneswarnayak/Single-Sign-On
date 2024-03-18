@@ -54,10 +54,10 @@ export default function SimpleSlide() {
       let res: any = await axios.post(loginLink, {
         email: tokenStr.email,
         role,
-        bodyData:moduleList
+        bodyData: moduleList,
       });
-      console.log("running1");
-      handlePostUserData(res.data.user, redirectLink);
+      console.log(res, "running1");
+      handlePostUserData(res.data, redirectLink);
       // data.user.role.name = role;
       console.log(res, "responseddddd");
     } catch (err: any) {
