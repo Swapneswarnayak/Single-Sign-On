@@ -14,11 +14,13 @@ import React, { useState } from "react";
 
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import { useRouter } from "next/navigation";
 
 
 
-const UpdateDes = ({ selectedDesData, updateFn, close }: any) => {
+const UpdateDes = ({ selectedDesData, close }: any) => {
   const auth: any = useAuth();
+  const router = useRouter()
   const [updateRoleData, setUpdateData] = useState({
     id: selectedDesData.designationId ? selectedDesData.designationId : "",
     name: selectedDesData.name ? selectedDesData.name : "",
@@ -60,7 +62,7 @@ const UpdateDes = ({ selectedDesData, updateFn, close }: any) => {
         variant: "error",
       });
     }
-    updateFn();
+    router.refresh()
     close();
   };
 

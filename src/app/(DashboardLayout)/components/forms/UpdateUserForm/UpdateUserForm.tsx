@@ -1,4 +1,5 @@
 "use client";
+import { useAuth } from "@/contexts/JWTContext/AuthContext.provider";
 import axiosApi from "@/utils/axiosApi";
 import {
   Box,
@@ -13,9 +14,27 @@ import {
 import { enqueueSnackbar } from "notistack";
 import React, { useState } from "react";
 
-const UpdateUserForm = ({ moduleRole, userData }: any) => {
 
-  console.log(userData,"USER DATA")
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+const UpdateUserForm = ({
+  moduleRole,
+  userData,
+  close,
+  updateUSerData,
+}: any) => {
+  const auth: any = useAuth();
+
+  console.log(auth, "Autthhhhhh");
 
   const [errors, setErrors] = useState({
     email: "",
@@ -26,13 +45,18 @@ const UpdateUserForm = ({ moduleRole, userData }: any) => {
     email: userData.email ? userData.email : "",
     contactNumber: userData.contactNumber ? userData.contactNumber : "",
     designation: userData.designation.name ? userData.designation.name : "",
-    moduleName: userData.name? userData.name:"",
-    role: userData.roles ? userData.roles : [],
+    userModule: userData.modules.map((module: any) => {
+      return {
+        moduleId: module.moduleId,
+        name: module.name,
+        roleId: module.roles.map((e: any) => e.roleId),
+      };
+    }),
   });
 
+  console.log(formData, "FORMDATA");
 
   const handleChange1 = (field: string, value: any) => {
-  
     if (field === "email") {
       const isValidEmail = /^\S+@\S+\.\S+$/.test(value);
       setErrors((prevErrors) => ({
@@ -47,38 +71,32 @@ const UpdateUserForm = ({ moduleRole, userData }: any) => {
           ? ""
           : "Invalid contact number format (10 digits)",
       }));
-    } 
+    }
     setFormData((prevData) => ({
       ...prevData,
       [field]: value,
     }));
   };
 
-  const handleChange = (field: string, value: any, target: any) => {
-    if (field === "role") {
-      const updatedRoles: any = [...formData.role];
-      if (target.selected) {
-        updatedRoles.push(value);
-      } else {
-        const index = updatedRoles.findIndex(
-          (role: any) => role.roleId === value
-        );
-        updatedRoles.splice(index, 1);
-      }
-
-      setFormData((prevData) => ({
-        ...prevData,
-        [field]: updatedRoles,
-      }));
+  const handleChange = (index: any, field: any, value: any) => {
+    const updatedUserModules = [...formData.userModule];
+    if (field === "roleId") {
+      updatedUserModules[index] = {
+        ...updatedUserModules[index],
+        [field]: value,
+      };
     }
 
-    setFormData((prevData) => ({
-      ...prevData,
+    updatedUserModules[index] = {
+      ...updatedUserModules[index],
       [field]: value,
-    }));
+    };
+    setFormData({
+      ...formData,
+      userModule: updatedUserModules,
+    });
   };
 
-  console.log(formData,"FORM DATA")
   //   const handleChange = (index: any, field: any, value: any) => {
   //     const updatedUserModules = [...formData.userModule];
   //     if (field === "roleId") {
@@ -103,11 +121,11 @@ const UpdateUserForm = ({ moduleRole, userData }: any) => {
 
     try {
       const config = {
-        url: `/api/v1/user/create`,
-        method: "POST",
+        url: `/api/v1/user/update`,
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          //   Authorization: `Bearer ${auth.user.token}`,
+          Authorization: `Bearer ${auth.user?.data?.token}`,
         },
         data: formData,
       };
@@ -124,15 +142,45 @@ const UpdateUserForm = ({ moduleRole, userData }: any) => {
           autoHideDuration: 3000,
           variant: "success",
         });
+        updateUSerData();
       } else {
         enqueueSnackbar(response.message, {
           autoHideDuration: 3000,
           variant: "error",
         });
       }
+      close();
     } catch (error: any) {
       console.error(error);
     }
+  };
+
+  const handleAdd = (index: any) => {
+    const updatedUserModules = [...formData.userModule];
+    updatedUserModules.splice(index + 1, 0, {
+      moduleId: "",
+      roleId: [],
+    });
+    setFormData({
+      ...formData,
+      userModule: updatedUserModules,
+    });
+  };
+
+  const handleDelete = (index: number, arr: any) => {
+    // const updatedUserModules = formData.userModule.filter(
+    //   (_, i) => i !== index
+    // );
+    // setFormData({
+    //   ...formData,
+    //   userModule: updatedUserModules,
+    // });
+
+    const newArray = [...arr.slice(0, index), ...arr.slice(index + 1)];
+    setFormData({
+      ...formData,
+      userModule: newArray,
+    });
   };
 
   return (
@@ -166,6 +214,7 @@ const UpdateUserForm = ({ moduleRole, userData }: any) => {
                 size="small"
                 fullWidth
                 value={formData.email}
+                disabled
                 onChange={(e) => handleChange1("email", e.target.value)}
                 error={!!errors.email}
                 helperText={errors.email}
@@ -200,46 +249,102 @@ const UpdateUserForm = ({ moduleRole, userData }: any) => {
               />
             </Grid>
 
-            <Grid item xs={6}>
-              <Typography variant="body2" fontWeight={"bold"}>
-                Module Name
-              </Typography>
-              <TextField
-                aria-describedby="outlined-weight-helper-text"
-                size="small"
-                type="text"
-                fullWidth
-                value={formData.moduleName}
-                onChange={(e) => handleChange1("moduleName", e.target.value)}
-              />
-            </Grid>
+            {formData.userModule.map(
+              (userModule: any, index: any, arr: any) => {
+                console.log(formData.userModule.length, "USER MODULE");
+                return (
+                  <>
+                    <Grid item xs={index > 0 ? 4 : 4}>
+                      <Typography variant="body2" fontWeight={"bold"}>
+                        Module Name
+                      </Typography>
 
-            <Grid item xs={6}>
-              <Typography variant="body2" fontWeight={"bold"}>
-                Roles
-              </Typography>
-              <Select
-                multiple
-                value={formData.role}
-                onChange={(e: any) =>
-                  handleChange("role", e.target.value, e.target)
-                }
-                input={<OutlinedInput size="small" fullWidth />}
-                inputProps={{ "aria-label": "Without label" }}
-              >
-                <MenuItem disabled value="">
-                  Select Module
-                </MenuItem>
+                      <Select
+                        size="small"
+                        onChange={(e: any) => {
+                          handleChange(index, "moduleId", e.target.value);
+                        }}
+                        fullWidth
+                        value={userModule.moduleId}
+                        MenuProps={MenuProps}
 
-                {formData.role.map((module: any) => {
-                  return (
-                    <MenuItem key={module.roleId} value={module}>
-                      {module.name}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </Grid>
+                      >
+                        <MenuItem disabled value="">
+                          Select Module
+                        </MenuItem>
+
+                        {moduleRole.map((module: any) => (
+                          <MenuItem
+                            key={module.moduleId}
+                            value={module.moduleId}
+                          >
+                            {module.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </Grid>
+
+                    <Grid item xs={index > 0 ? 4 : 4}>
+                      <Typography variant="body2" fontWeight={"bold"}>
+                        Roles
+                      </Typography>
+                      <Select
+                        multiple
+                        value={userModule.roleId}
+                        onChange={(e: any) =>
+                          handleChange(index, "roleId", e.target.value)
+                        }
+                        input={<OutlinedInput size="small" fullWidth />}
+                        inputProps={{ "aria-label": "Without label" }}
+                        MenuProps={MenuProps}
+
+                      >
+                        <MenuItem disabled value="">
+                          Select Module
+                        </MenuItem>
+
+                        {moduleRole
+                          .filter(
+                            (e: any) =>
+                              e.moduleId === userModule.moduleId &&
+                              e.moduleId === userModule.moduleId
+                          )
+                          .map((role: any) => {
+                            return role.role.map((roles: any) => (
+                              <MenuItem key={roles.roleId} value={roles.roleId}>
+                                {roles.name}
+                              </MenuItem>
+                            ));
+                          })}
+                      </Select>
+                    </Grid>
+
+                    { 
+                      <Grid mt={2} item xs={2}>
+                        <Button
+                          onClick={() => handleAdd(index)}
+                          disabled={!formData}
+                          variant="contained"
+                        >
+                          Add
+                        </Button>
+                      </Grid>
+                    }
+                    {formData.userModule.length !== 1 && (
+                      <Grid mt={2} item xs={2}>
+                        <Button
+                          color="error"
+                          onClick={() => handleDelete(index, arr)}
+                          variant="contained"
+                        >
+                          Delete
+                        </Button>
+                      </Grid>
+                    )}
+                  </>
+                );
+              }
+            )}
           </Grid>
         </Grid>
       </form>

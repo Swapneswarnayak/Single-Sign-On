@@ -27,8 +27,18 @@ import { useRouter } from "next/navigation";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import UpdateUserForm from "../components/forms/UpdateUserForm/UpdateUserForm";
 
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 const User = () => {
   const auth: any = useAuth();
@@ -78,25 +88,39 @@ const User = () => {
       field: "userName",
       headerName: "User Name",
       headerClassName: "super-app-theme--header",
-      width: 200,
+      width: 150,
     },
     {
       field: "contactNumber",
       headerName: "Contact Number",
       headerClassName: "super-app-theme--header",
-      width: 200,
+      width: 150,
+    },
+    {
+      field: "email",
+      headerName: "Email Id",
+      headerClassName: "super-app-theme--header",
+      width: 150,
     },
     {
       field: "name",
       headerName: "Module Name",
       headerClassName: "super-app-theme--header",
       width: 200,
+      renderCell: (params) => {
+        return params.row.modules.map((module: any, index: any) => (
+          <Typography style={{ whiteSpace: "pre-wrap" }} variant="body2">
+            {module.name}
+            {index < params.row.modules.length - 1 && ", "}
+          </Typography>
+        ));
+      },
     },
     {
       field: "designation",
       headerName: "Designation",
       headerClassName: "super-app-theme--header",
-      width: 200,
+      width: 150,
       renderCell: (row: any) => {
         return (
           <Typography variant="body2">{row.row.designation.name}</Typography>
@@ -107,7 +131,7 @@ const User = () => {
       field: "edit",
       headerName: "Edit",
       headerClassName: "super-app-theme--header",
-      width: 200,
+      width: 120,
       renderCell: (row) => {
         return (
           <Button onClick={() => handleUpdateUser(row.row)} variant="contained">
@@ -132,24 +156,6 @@ const User = () => {
       console.error(error);
     }
   };
-
-  // const getRole = async () => {
-  //   try {
-  //     const res = await axios.get(`${BACKEND_BASE_URL}/api/v1/role`);
-  //     setRole(res?.data?.data);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
-  // const getModuleList = async () => {
-  //   try {
-  //     const res = await axios.get(`${BACKEND_BASE_URL}/api/v1/module`);
-  //     setModuleData(res?.data?.data);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
 
   const getMdouleRole = async () => {
     try {
@@ -178,18 +184,13 @@ const User = () => {
         id: i + 1,
       }));
 
+      console.log(resData, "resData");
+
       setUserData(resData);
     } catch (error) {
       console.error(error);
     }
   };
-
-  const roles = [
-    { name: "ASO1", roleId: 1 },
-    { name: "Secretary", roleId: 2 },
-    { name: "General", roleId: 3 },
-    { name: "Diary Entry", roleId: 4 },
-  ];
 
   const handleChange1 = (field: string, value: any) => {
     if (field === "email") {
@@ -221,6 +222,9 @@ const User = () => {
         [field]: value,
       };
     }
+    // else if(field==="roleId"){
+
+    // }
 
     updatedUserModules[index] = {
       ...updatedUserModules[index],
@@ -318,7 +322,7 @@ const User = () => {
     getDes();
     getMdouleRole();
     getAllUsers();
-  }, [auth?.user?.data?.token]);
+  }, [auth?.user?.data]);
 
   return (
     <>
@@ -341,6 +345,7 @@ const User = () => {
                     Name
                   </Typography>
                   <TextField
+                    placeholder="Enter User Name"
                     aria-describedby="outlined-weight-helper-text"
                     size="small"
                     fullWidth
@@ -353,6 +358,7 @@ const User = () => {
                     Email
                   </Typography>
                   <TextField
+                    placeholder="Enter Email Id"
                     aria-describedby="outlined-weight-helper-text"
                     type="email"
                     size="small"
@@ -368,6 +374,7 @@ const User = () => {
                     Contact No
                   </Typography>
                   <TextField
+                    placeholder="Enter Contact No"
                     aria-describedby="outlined-weight-helper-text"
                     size="small"
                     type="number"
@@ -393,7 +400,7 @@ const User = () => {
                     fullWidth
                     size="small"
                   >
-                    {des.map((element: any,i:any) => (
+                    {des.map((element: any, i: any) => (
                       <MenuItem key={i} value={element.designationId}>
                         {element.name}
                       </MenuItem>
@@ -427,12 +434,12 @@ const User = () => {
                                 }}
                                 fullWidth
                                 // value={userModule.moduleId}
+                                MenuProps={MenuProps}
                               >
                                 <MenuItem disabled value="">
                                   Select Module
                                 </MenuItem>
-                                {/* {userModule.moduleId === moduleId
-                                  ?  */}
+
                                 {moduleRole.map((module: any) => (
                                   <MenuItem
                                     key={module.moduleId}
@@ -441,18 +448,6 @@ const User = () => {
                                     {module.name}
                                   </MenuItem>
                                 ))}
-                                {/* // : moduleRole.filter((module: any) => {
-                                  //     if (userModule.moduleId !== moduleId) {
-                                  //       return (
-                                  //         <MenuItem
-                                  //           key={module.moduleId}
-                                  //           value={module.moduleId}
-                                  //         >
-                                  //           {module.name}
-                                  //         </MenuItem>
-                                  //       );
-                                  //     }
-                                  //   })} */}
                               </Select>
                             </Grid>
                             <Grid item xs={4}>
@@ -469,6 +464,7 @@ const User = () => {
                                 }}
                                 input={<OutlinedInput size="small" fullWidth />}
                                 inputProps={{ "aria-label": "Without label" }}
+                                MenuProps={MenuProps}
                               >
                                 <MenuItem disabled value="">
                                   Select Roles
@@ -490,18 +486,60 @@ const User = () => {
                                     ));
                                   })}
                               </Select>
+                              {/* <Select
+                                labelId="demo-multiple-checkbox-label"
+                                id="demo-multiple-checkbox"
+                                multiple
+                                value={userModule.roleId}
+                                onChange={(e: any) => {
+                                  handleChange(index, "roleId", e.target.value);
+                                }}
+                                input={<OutlinedInput size="small" fullWidth />}
+                                inputProps={{ "aria-label": "Without label" }}
+                                renderValue={(selected) => selected.join(", ")}
+                              >
+                                <MenuItem disabled value="">
+                                  Select Roles
+                                </MenuItem>
+                                {moduleRole
+                                  .filter(
+                                    (e: any) =>
+                                      e.moduleId === userModule.moduleId &&
+                                      e.moduleId === userModule.moduleId
+                                  )
+                                  .map((role: any) => {
+                                    return role.role.map((roles: any) => (
+                                      // <MenuItem
+                                      //   key={roles.roleId}
+                                      //   value={roles.roleId}
+                                      // >
+                                      //   {roles.name}
+                                      // </MenuItem>
+                                      <MenuItem
+                                        key={roles.roleId}
+                                        value={roles.roleId}
+                                      >
+                                        <Checkbox
+                                          checked={
+                                            userModule.roleId.indexOf(roles) > -1
+                                          }
+                                        />
+                                        <ListItemText primary={roles.name} />
+                                      </MenuItem>
+                                    ));
+                                  })}
+                              </Select> */}
                             </Grid>
-                            {
-                              <Grid mt={2} item xs={2}>
-                                <Button
-                                  onClick={() => handleAdd(index)}
-                                  disabled={!formData}
-                                  variant="contained"
-                                >
-                                  Add
-                                </Button>
-                              </Grid>
-                            }
+
+                            <Grid mt={2} item xs={2}>
+                              <Button
+                                onClick={() => handleAdd(index)}
+                                disabled={!formData}
+                                variant="contained"
+                              >
+                                Add
+                              </Button>
+                            </Grid>
 
                             {userModule.moduleId &&
                               userModule.roleId.length > 0 &&
@@ -577,7 +615,7 @@ const User = () => {
               disableRowSelectionOnClick
             />
           </Box>
-          <Dialog open={open} >
+          <Dialog open={open}>
             <Button
               onClick={handleDialogClose}
               variant="contained"
@@ -596,15 +634,13 @@ const User = () => {
                 userData={selectedUser}
                 des={des}
                 moduleRole={moduleRole}
+                close={handleDialogClose}
+                updateUSerData={getAllUsers}
               />
             </DialogContent>
           </Dialog>
         </>
       </DashboardCard>
-
-      {/* {open && ( */}
-
-      {/* )}  */}
     </>
   );
 };

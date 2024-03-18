@@ -16,12 +16,18 @@ import { useAuth } from "@/contexts/JWTContext/AuthContext.provider";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import axios from "axios";
 import { BACKEND_BASE_URL } from "@/config";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
   const auth: any = useAuth();
+  const router = useRouter();
+
+  console.log(auth, "AUTH");
+
   const [formData, setFormData] = useState({
     name: "",
     loginLink: "",
+    redirectLink: "",
   });
 
   const [row, setRows] = useState([]);
@@ -69,7 +75,7 @@ const Page = () => {
         method: "POST",
         headers: {
           // "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${auth.user.token}`,
+          Authorization: `Bearer ${auth.user.data?.token}`,
         },
         data: formData,
       };
@@ -88,25 +94,38 @@ const Page = () => {
     } catch (error) {
       console.error(error);
     }
+    // router.refresh()
+    getModuleList();
     setFormData({
       name: "",
       loginLink: "",
+      redirectLink: "",
     });
   };
 
   const getModuleList = async () => {
-    const res = await axios.get(`${BACKEND_BASE_URL}/api/v1/module`);
-
-    const rowData = res?.data?.data.map((el: any, i: any) => ({
-      ...el,
-      id: i + 1,
-    }));
-    setRows(rowData);
+    const config = {
+      url: `/api/v1/module`,
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${auth.user.data?.token}`,
+      },
+    };
+    try {
+      let res = await axiosApi(config.url, config.method, config.headers);
+      const rowData = res?.data.map((el: any, i: any) => ({
+        ...el,
+        id: i + 1,
+      }));
+      setRows(rowData);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
     getModuleList();
-  }, [auth.user]);
+  }, [auth.user.data?.token]);
 
   return (
     <DashboardCard>
@@ -115,13 +134,13 @@ const Page = () => {
           Create Module
         </Typography>
         <Grid container spacing={2} columns={12}>
-          <Grid item lg={6} xs={6}>
+          <Grid item lg={3} xs={3}>
             <Typography variant="subtitle1" fontWeight={600} component="label">
               Name
             </Typography>
             {/* <Asterisk /> */}
             <TextField
-            placeholder="Enter name"
+              placeholder="Enter name"
               value={formData.name}
               size="small"
               onChange={(e: any) => handleFormChange("name", e.target.value)}
@@ -131,7 +150,7 @@ const Page = () => {
             />
           </Grid>
 
-          <Grid item lg={6} xs={6}>
+          <Grid item lg={3} xs={3}>
             <Typography variant="subtitle1" fontWeight={600} component="label">
               URL
             </Typography>
@@ -141,6 +160,24 @@ const Page = () => {
               placeholder="Module URL"
               onChange={(e: any) =>
                 handleFormChange("loginLink", e.target.value)
+              }
+              size="small"
+              type="text"
+              variant="outlined"
+              fullWidth
+            />
+          </Grid>
+
+          <Grid item lg={3} xs={3}>
+            <Typography variant="subtitle1" fontWeight={600} component="label">
+              Redirect URL
+            </Typography>
+            {/* <Asterisk /> */}
+            <TextField
+              value={formData.redirectLink}
+              placeholder=" Redirect URL"
+              onChange={(e: any) =>
+                handleFormChange("redirectLink", e.target.value)
               }
               size="small"
               type="text"

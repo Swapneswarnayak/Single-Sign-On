@@ -49,14 +49,6 @@ const Dashboard = () => {
   //   getModuleList();
   //   getRoleList()
   // },[])
-  console.log(loginRole, "dashRole");
-  if (loginRole == undefined) {
-    return (
-      <Box sx={{ width: "fit-content", margin: "10% auto" }}>
-        <img src="./Spin.gif" alt="Loader" />
-      </Box>
-    );
-  }
 
   return (
     <Box>

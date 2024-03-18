@@ -97,7 +97,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
             user: null,
           },
         });
-        router.push("/");
+        // router.push("/");
       }
     };
 
