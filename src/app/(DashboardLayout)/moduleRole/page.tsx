@@ -322,6 +322,7 @@ const Page = () => {
                 selectedModuleRole={selectedModuleRole}
                 moduleData={moduleData}
                 roleData={roleData}
+                close={handleDialogClose}
               />
             </DialogContent>
           </Dialog>

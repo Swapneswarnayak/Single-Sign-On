@@ -1,3 +1,5 @@
+import { useAuth } from "@/contexts/JWTContext/AuthContext.provider";
+import axiosApi from "@/utils/axiosApi";
 import {
   Button,
   FormControl,
@@ -7,6 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { enqueueSnackbar } from "notistack";
 import React, { useState } from "react";
 
 const ITEM_HEIGHT = 48;
@@ -24,8 +27,11 @@ const UpdateModuleRoles = ({
   selectedModuleRole,
   moduleData,
   roleData,
+  close
 }: any) => {
   console.log(selectedModuleRole, "SELECTED  MODULE ROLE ");
+
+  const auth:any = useAuth()
 
   const [formData, setFormData] = useState<any>({
     moduleId: selectedModuleRole.moduleId ? selectedModuleRole.moduleId : "",
@@ -40,6 +46,47 @@ const UpdateModuleRoles = ({
       [field]: value,
     }));
   };
+
+  const handleSubmit = async () => {
+    try {
+      const config = {
+        url: `/api/v1/module-role/update`,
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${auth.user.token}`,
+        },
+        data: formData,
+      };
+      let response = await axiosApi(
+        config.url,
+        config.method,
+        config.headers,
+        config.data
+      );
+
+      if (response.success) {
+        enqueueSnackbar(response?.message, {
+          autoHideDuration: 3000,
+          variant: "success",
+        });
+        // getModuleRole();
+        // router.refresh()
+      } else {
+        enqueueSnackbar(response?.message, {
+          autoHideDuration: 3000,
+          variant: "error",
+        });
+      }
+    } catch (error: any) {
+      console.error(error);
+      enqueueSnackbar(error?.message, {
+        autoHideDuration: 3000,
+        variant: "error",
+      });
+    }
+    close()
+  };
+
   return (
     <Grid container>
       <Typography variant="h4" fontWeight={"bold"} mb={1}>
@@ -97,9 +144,9 @@ const UpdateModuleRoles = ({
           <Button
             disabled={!formData.moduleId || !formData.roleId}
             variant="contained"
-            // onClick={handleSubmit}
+            onClick={handleSubmit}
           >
-            Add
+            Update
           </Button>
         </Grid>
       </Grid>
