@@ -30,14 +30,13 @@ export default function SimpleSlide() {
 
   const getModuleandRoles = async () => {
     try {
-      let module = await axios.get(
+      let fetchedData: any = await axios.get(
         `${BACKEND_BASE_URL}/api/v1/user/module-list`,
         {
           headers: { Authorization: `Bearer ${tokenStr.token}` },
         }
       );
-      console.log(module.data.data, "mod");
-      setModuleList(module.data.data);
+      setModuleList(fetchedData.data.data);
     } catch (err: any) {
       console.log(err);
     }
@@ -50,14 +49,15 @@ export default function SimpleSlide() {
     loginLink: any,
     redirectLink: any
   ) => {
-    console.log(loginLink, "running");
+    console.log(moduleList);
     try {
       let res: any = await axios.post(loginLink, {
         email: tokenStr.email,
         role,
+        bodyData: moduleList,
       });
-      console.log("running1");
-      handlePostUserData(res.data.user, redirectLink);
+      console.log(res, "running1");
+      handlePostUserData(res.data, redirectLink);
       // data.user.role.name = role;
       console.log(res, "responseddddd");
     } catch (err: any) {
@@ -87,6 +87,7 @@ export default function SimpleSlide() {
 
     console.log("running2");
   };
+
   console.log(moduleList, "List");
   return (
     <Box
@@ -101,7 +102,7 @@ export default function SimpleSlide() {
         <Grid container spacing={2}>
           {moduleList?.modules.map((el: any, i: any) => {
             return (
-              <Grid item xs={4}>
+              <Grid key={i} item xs={4}>
                 <Slide
                   direction={el.direction}
                   style={{ transformOrigin: "0 0 0", height: "100%" }}
@@ -139,9 +140,10 @@ export default function SimpleSlide() {
                       </Typography>
                     </CardContent>
                     <CardActions>
-                      {el.roles.map((el2: any) => {
+                      {el.roles.map((el2: any, index: any) => {
                         return (
                           <Button
+                            key={index}
                             size="small"
                             onClick={async () => {
                               console.log("started");

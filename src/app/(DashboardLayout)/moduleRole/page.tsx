@@ -186,8 +186,8 @@ const Page = () => {
                   size="small"
                   value={formData.moduleId}
                 >
-                  {moduleData.map((el: any) => (
-                    <MenuItem value={el.moduleId}>{el.name}</MenuItem>
+                  {moduleData.map((el: any,i:any) => (
+                    <MenuItem key={i} value={el.moduleId}>{el.name}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
@@ -210,8 +210,8 @@ const Page = () => {
                   size="small"
                   value={formData.roleId}
                 >
-                  {roleData.map((el: any) => (
-                    <MenuItem value={el.roleId}>{el.name}</MenuItem>
+                  {roleData.map((el: any , i:any) => (
+                    <MenuItem key={i} value={el.roleId}>{el.name}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
