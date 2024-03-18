@@ -5,8 +5,11 @@ import DashboardCard from "../components/shared/DashboardCard";
 import {
   Box,
   Button,
+  Dialog,
+  DialogContent,
   FormControl,
   Grid,
+  IconButton,
   MenuItem,
   Select,
   TextField,
@@ -19,19 +22,26 @@ import axios from "axios";
 import { BACKEND_BASE_URL } from "@/config";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
+import UpdateModuleRoles from "../components/forms/UpdateModuleRoles/UpdateModuleRoles";
+
+import CreateIcon from "@mui/icons-material/Create";
+import CloseIcon from "@mui/icons-material/Close";
 
 const Page = () => {
   const auth: any = useAuth();
-  const router = useRouter()
+  const router = useRouter();
 
   const [formData, setFormData] = useState<any>({
     moduleId: "",
-    roleId: "",
+    roleId: [],
   });
   const [moduleData, setModuleData] = useState<any>([]);
   const [roleData, setRoleData] = useState<any>([]);
-
   const [moduleRoleData, setModuleRoleData] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [selectedModuleRole, setSelectedModuleRole] = useState([]);
+
+  const handleDialogClose = () => setOpen(false);
 
   const column: GridColDef[] = [
     {
@@ -44,14 +54,14 @@ const Page = () => {
       field: "name",
       headerName: "Name of Module",
       headerClassName: "super-app-theme--header",
-      width: 400,
+      width: 250,
     },
 
     {
       field: "roles",
       headerName: "Roles",
       headerClassName: "super-app-theme--header",
-      width: 500,
+      width: 550,
       renderCell: (params) => {
         console.log(params, "PARAMS");
         return (
@@ -66,7 +76,25 @@ const Page = () => {
         );
       },
     },
+    {
+      field: "update",
+      headerName: "Edit",
+      headerClassName: "super-app-theme--header",
+      width: 100,
+      renderCell: (params) => {
+        console.log(params, "param");
+        return (
+          <IconButton onClick={() => handleEdit(params.row)}>
+            <CreateIcon />
+          </IconButton>
+        );
+      },
+    },
   ];
+  const handleEdit = (data: any) => {
+    setOpen(true);
+    setSelectedModuleRole(data);
+  };
 
   const handleFormChange = (field: any, value: any) => {
     setFormData((prevData: any) => ({
@@ -91,16 +119,26 @@ const Page = () => {
         config.headers,
         config.data
       );
-      if (response) {
+
+      if (response.success) {
         enqueueSnackbar(response?.message, {
           autoHideDuration: 3000,
           variant: "success",
         });
-        // getModuleRole();
-        router.refresh()
+        getModuleRole();
+        // router.refresh()
+      } else {
+        enqueueSnackbar(response?.message, {
+          autoHideDuration: 3000,
+          variant: "error",
+        });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      enqueueSnackbar(error?.message, {
+        autoHideDuration: 3000,
+        variant: "error",
+      });
     }
   };
 
@@ -171,6 +209,8 @@ const Page = () => {
     getModuleRole();
   }, [auth.user?.data?.token]);
 
+  console.log(formData, "moduleUser Data");
+
   return (
     <>
       <DashboardCard>
@@ -190,8 +230,10 @@ const Page = () => {
                   size="small"
                   value={formData.moduleId}
                 >
-                  {moduleData.map((el: any,i:any) => (
-                    <MenuItem key={i} value={el.moduleId}>{el.name}</MenuItem>
+                  {moduleData.map((el: any, i: any) => (
+                    <MenuItem key={i} value={el.moduleId}>
+                      {el.name}
+                    </MenuItem>
                   ))}
                 </Select>
               </FormControl>
@@ -202,20 +244,16 @@ const Page = () => {
                 <Typography variant="body1" fontWeight={"bold"}>
                   Roles
                 </Typography>
-                {/* <TextField
-                  placeholder="Enter Role"
-                  size="small"
-                  name="name"
-                  onChange={(e) => handleFormChange("name", e.target.value)}
-                  fullWidth
-                /> */}
                 <Select
+                  multiple
                   onChange={(e) => handleFormChange("roleId", e.target.value)}
                   size="small"
                   value={formData.roleId}
                 >
-                  {roleData.map((el: any , i:any) => (
-                    <MenuItem key={i} value={el.roleId}>{el.name}</MenuItem>
+                  {roleData.map((el: any, i: any) => (
+                    <MenuItem key={i} value={el.roleId}>
+                      {el.name}
+                    </MenuItem>
                   ))}
                 </Select>
               </FormControl>
@@ -265,6 +303,28 @@ const Page = () => {
               disableRowSelectionOnClick
             />
           </Box>
+
+          <Dialog open={open} onClose={handleDialogClose}>
+            <Button
+              onClick={handleDialogClose}
+              variant="contained"
+              sx={{
+                position: "absolute",
+                backgroundColor: "red",
+                right: 0,
+                "&:hover": { backgroundColor: "red" },
+              }}
+            >
+              <CloseIcon />
+            </Button>
+            <DialogContent>
+              <UpdateModuleRoles
+                selectedModuleRole={selectedModuleRole}
+                moduleData={moduleData}
+                roleData={roleData}
+              />
+            </DialogContent>
+          </Dialog>
         </>
       </DashboardCard>
     </>

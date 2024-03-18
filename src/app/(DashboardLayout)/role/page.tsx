@@ -109,8 +109,8 @@ const Page = () => {
         autoHideDuration: 3000,
         variant: "success",
       });
-      // getRole();
-      router.refresh()
+      getRole();
+      // router.refresh()
     } else {
       enqueueSnackbar(res.message, {
         autoHideDuration: 3000,
