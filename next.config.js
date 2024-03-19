@@ -4,6 +4,7 @@ const nextConfig = {
     // domains: ["localhost"],
     domains: ["172.16.15.49:4101"],
   },
+  reactStrictMode: false
 };
 
 module.exports = nextConfig;

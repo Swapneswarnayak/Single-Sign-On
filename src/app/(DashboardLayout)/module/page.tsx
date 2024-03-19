@@ -17,6 +17,7 @@ import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import axios from "axios";
 import { BACKEND_BASE_URL } from "@/config";
 import { useRouter } from "next/navigation";
+import LinearProgress from '@mui/material/LinearProgress';
 
 const Page = () => {
   const auth: any = useAuth();
@@ -123,6 +124,7 @@ const Page = () => {
     }
   };
 
+
   useEffect(() => {
     getModuleList();
   }, [auth.user.data?.token]);
@@ -130,7 +132,7 @@ const Page = () => {
   return (
     <DashboardCard>
       <>
-        <Typography variant="h4" fontWeight={"bold"} mb={3}>
+        {/* <Typography variant="h4" fontWeight={"bold"} mb={3}>
           Create Module
         </Typography>
         <Grid container spacing={2} columns={12}>
@@ -138,7 +140,6 @@ const Page = () => {
             <Typography variant="subtitle1" fontWeight={600} component="label">
               Name
             </Typography>
-            {/* <Asterisk /> */}
             <TextField
               placeholder="Enter name"
               value={formData.name}
@@ -154,7 +155,6 @@ const Page = () => {
             <Typography variant="subtitle1" fontWeight={600} component="label">
               URL
             </Typography>
-            {/* <Asterisk /> */}
             <TextField
               value={formData.loginLink}
               placeholder="Module URL"
@@ -172,7 +172,6 @@ const Page = () => {
             <Typography variant="subtitle1" fontWeight={600} component="label">
               Redirect URL
             </Typography>
-            {/* <Asterisk /> */}
             <TextField
               value={formData.redirectLink}
               placeholder=" Redirect URL"
@@ -195,20 +194,20 @@ const Page = () => {
               Submit
             </Button>
           </Grid>
-        </Grid>
-
+        </Grid> */}
+        
         <Grid
           item
           lg={6}
           xs={6}
           sx={{
-            mt: 4,
+            mt: 1,
             "& .super-app-theme--header": {
               backgroundColor: "#bccdfb",
             },
           }}
         >
-          <Typography variant="h5">List of Modules</Typography>
+          <Typography variant="h4" fontWeight={"bold"}>List of Modules</Typography>
           <DataGrid
             rows={row}
             columns={column}

@@ -137,7 +137,7 @@ const Page = () => {
         url: `/api/v1/role/create`,
         method: "POST",
         headers: {
-          Authorization: `Bearer ${auth.user.token}`,
+          Authorization: `Bearer ${auth.user?.data?.token}`,
         },
         data: formData,
       };
@@ -147,15 +147,17 @@ const Page = () => {
         config.headers,
         config.data
       );
-      if (response) {
+      if (response?.success) {
         enqueueSnackbar(response?.message, {
           autoHideDuration: 3000,
-          variant: "error",
+          variant: "success",
         });
       }
     } catch (error) {
       console.error(error);
     }
+    getRole()
+
     setFormData({
       name: "",
     });
@@ -183,7 +185,6 @@ const Page = () => {
       // const res = await axios.get(`${BACKEND_BASE_URL}/api/v1/role`);
       let res = await axiosApi(config.url, config.method, config.headers);
 
-      console.log(res);
       const resData = res.data.map((e: any, i: any) => ({ ...e, id: i + 1 }));
       setRole(resData);
     } catch (error) {
@@ -198,12 +199,11 @@ const Page = () => {
 
   return (
     <>
-      <DashboardCard>
+      {/* <DashboardCard>
         <>
           <Typography variant="h4" fontWeight={"bold"} mb={3}>
             Create Role
           </Typography>
-          {/* {data.map((ele:any, i:any) => ( */}
           <Grid container spacing={1} my={2}>
             <Grid item lg={6} xs={6}>
               <FormControl fullWidth>
@@ -229,9 +229,8 @@ const Page = () => {
               </Button>
             </Grid>
           </Grid>
-          {/* ))} */}
         </>
-      </DashboardCard>
+      </DashboardCard> */}
 
       <DashboardCard>
         <>
@@ -269,7 +268,7 @@ const Page = () => {
           <Dialog open={open} onClose={handleDialogClose}>
             <Button onClick={handleDialogClose } variant="contained" sx={{position:"absolute", backgroundColor:"red", right:0, "&:hover":{backgroundColor:"red"}}}><CloseIcon/></Button>
             <DialogContent>
-              <UpdateRole selectedRole={selectedroleData} />
+              <UpdateRole selectedRole={selectedroleData} close={handleDialogClose} />
             </DialogContent>
           </Dialog>
         </>

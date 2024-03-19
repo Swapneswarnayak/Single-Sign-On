@@ -42,7 +42,6 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
   }));
 
 
-  console.log(auth,"AUTHjhhhhhhh")
 
 
   // useEffect(() => {

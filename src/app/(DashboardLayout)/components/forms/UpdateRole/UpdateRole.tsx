@@ -12,16 +12,18 @@ import {
 import { enqueueSnackbar } from "notistack";
 import React, { useState } from "react";
 
-const UpdateRole = ({ selectedRole }: any) => {
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+
+
+const UpdateRole = ({ selectedRole, close }: any) => {
   const auth: any = useAuth();
   const [updateRoleData, setUpdateData] = useState({
     id: selectedRole.roleId ? selectedRole.roleId : "",
     name: selectedRole.name ? selectedRole.name : "",
   });
 
-  console.log(updateRoleData, "DATA");
-  const handleSubmit = async (e:any) => {
-    e.preventDefault()
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
     const config = {
       url: `/api/v1/role`,
       method: "PUT",
@@ -32,20 +34,23 @@ const UpdateRole = ({ selectedRole }: any) => {
       data: updateRoleData,
     };
     try {
-      let res = await axiosApi(config.url, config.method, config.headers, config.data);
+      let res = await axiosApi(
+        config.url,
+        config.method,
+        config.headers,
+        config.data
+      );
 
-      console.log(res, "UPDATE ROLE");
       if (res?.success) {
         enqueueSnackbar(res.message, {
           autoHideDuration: 3000,
           variant: "success",
         });
-      }
-      else{
+      } else {
         enqueueSnackbar(res.message, {
-            autoHideDuration: 3000,
-            variant: "error",
-          });
+          autoHideDuration: 3000,
+          variant: "error",
+        });
       }
     } catch (error: any) {
       enqueueSnackbar(error.message, {
@@ -53,6 +58,7 @@ const UpdateRole = ({ selectedRole }: any) => {
         variant: "error",
       });
     }
+    close()
   };
 
   const handleFormChange = (field: any, value: any) => {
@@ -63,7 +69,11 @@ const UpdateRole = ({ selectedRole }: any) => {
   };
   return (
     <Box width={380}>
+      <Typography variant="h4" fontWeight={"bold"} mb={1}>
+          Update Role
+        </Typography>
       <Grid container spacing={2} my={1}>
+        
         <Grid item lg={8} xs={8}>
           <FormControl fullWidth>
             <Typography variant="body1" fontWeight={"bold"}>
@@ -81,11 +91,11 @@ const UpdateRole = ({ selectedRole }: any) => {
         </Grid>
         <Grid mt={2.5} item lg={4} xs={4}>
           <Button
-            disabled={updateRoleData.name===selectedRole.name}
+            disabled={updateRoleData.name === selectedRole.name}
             variant="contained"
             onClick={handleSubmit}
           >
-            Update
+            <ModeEditIcon sx={{ mr: 1 }} /> Update
           </Button>
         </Grid>
       </Grid>
