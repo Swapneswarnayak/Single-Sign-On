@@ -12,15 +12,13 @@ import {
 import { enqueueSnackbar } from "notistack";
 import React, { useState } from "react";
 
-import BorderColorIcon from '@mui/icons-material/BorderColor';
+import BorderColorIcon from "@mui/icons-material/BorderColor";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { useRouter } from "next/navigation";
 
-
-
 const UpdateDes = ({ selectedDesData, close }: any) => {
   const auth: any = useAuth();
-  const router = useRouter()
+  const router = useRouter();
   const [updateRoleData, setUpdateData] = useState({
     id: selectedDesData.designationId ? selectedDesData.designationId : "",
     name: selectedDesData.name ? selectedDesData.name : "",
@@ -62,7 +60,7 @@ const UpdateDes = ({ selectedDesData, close }: any) => {
         variant: "error",
       });
     }
-    router.refresh()
+    router.refresh();
     close();
   };
 
@@ -74,6 +72,9 @@ const UpdateDes = ({ selectedDesData, close }: any) => {
   };
   return (
     <Box width={380}>
+      <Typography variant="h4" fontWeight={"bold"} mb={1}>
+        Update Designation
+      </Typography>
       <Grid container spacing={2} my={1}>
         <Grid item lg={8} xs={8}>
           <FormControl fullWidth>
@@ -96,7 +97,7 @@ const UpdateDes = ({ selectedDesData, close }: any) => {
             variant="contained"
             onClick={handleUpdate}
           >
-            <ModeEditIcon sx={{mr:1}}/> Update
+            <ModeEditIcon sx={{ mr: 1 }} /> Update
           </Button>
         </Grid>
       </Grid>

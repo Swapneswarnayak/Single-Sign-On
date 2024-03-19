@@ -33,8 +33,6 @@ const Page = () => {
     name: "",
   });
   const [designation, setDesgination] = useState<any>([]);
-
-  const [role, setRole] = useState<any>([]);
   const [open, setOpen] = useState(false);
   const [selectedDesData, setSelectedDesData] = useState("");
 
@@ -107,26 +105,22 @@ const Page = () => {
     try {
       let res = await axiosApi(config.url, config.method, config.headers);
 
-      console.log(res, "RES FOR DESIG");
-      if (res) {
+      if (res.success) {
         enqueueSnackbar(res.message, {
           autoHideDuration: 3000,
           variant: "success",
-          // preventDuplicate:true
         });
         getDes();
       } else {
         enqueueSnackbar(res.message, {
           autoHideDuration: 3000,
           variant: "error",
-          // preventDuplicate:true
         });
       }
-    } catch (error:any) {
+    } catch (error: any) {
       enqueueSnackbar(error.message, {
         autoHideDuration: 3000,
         variant: "error",
-        // preventDuplicate:true
       });
     }
   };
@@ -144,7 +138,7 @@ const Page = () => {
         url: `/api/v1/designation/create`,
         method: "POST",
         headers: {
-          Authorization: `Bearer ${auth.user.token}`,
+          Authorization: `Bearer ${auth.user.data.token}`,
         },
         data: formData,
       };
@@ -154,13 +148,18 @@ const Page = () => {
         config.headers,
         config.data
       );
-      if (response) {
+      if (response.success) {
         enqueueSnackbar(response?.message, {
           autoHideDuration: 3000,
           variant: "success",
         });
 
         getDes();
+      } else {
+        enqueueSnackbar(response?.message, {
+          autoHideDuration: 3000,
+          variant: "error",
+        });
       }
     } catch (error: any) {
       console.error(error);
@@ -237,7 +236,7 @@ const Page = () => {
 
       <DashboardCard>
         <>
-          <Typography variant="h4" fontWeight={"bold"} mb={3}>
+          <Typography variant="h5" fontWeight={"bold"} mb={3}>
             List Of All Designation
           </Typography>
           <Box

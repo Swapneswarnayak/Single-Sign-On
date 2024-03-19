@@ -77,6 +77,8 @@ const User = () => {
     setOpen(true);
   };
 
+
+  console.log(auth, "AUTHHHHH")
   const column: GridColDef[] = [
     {
       field: "id",
@@ -149,20 +151,35 @@ const User = () => {
   const [moduleId, setModuleID] = useState("");
 
   const getDes = async () => {
+    const config = {
+      url: `/api/v1/designation`,
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${auth?.user?.data?.token}`,
+      },
+    };
     try {
-      const res = await axios.get(`${BACKEND_BASE_URL}/api/v1/designation`);
-      setDes(res?.data?.data);
+      let res = await axiosApi(config.url, config.method, config.headers);
+
+      setDes(res?.data);
     } catch (error) {
       console.error(error);
     }
   };
 
   const getMdouleRole = async () => {
-    try {
-      const res = await axios.get(
-        `${BACKEND_BASE_URL}/api/v1/module/module-role-list`
-      );
-      setModuleRoleData(res?.data?.data);
+    const config = {
+      url: `/api/v1/module/module-role-list`,
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${auth?.user?.data?.token}`,
+      },
+    };
+    try { 
+
+      let res = await axiosApi(config.url, config.method, config.headers);
+
+      setModuleRoleData(res?.data);
     } catch (error) {
       console.error(error);
     }
@@ -184,7 +201,6 @@ const User = () => {
         id: i + 1,
       }));
 
-      console.log(resData, "resData");
 
       setUserData(resData);
     } catch (error) {
@@ -284,7 +300,6 @@ const User = () => {
         config.data
       );
 
-      console.log(response, "RESPONSE");
       if (response.success) {
         enqueueSnackbar(response.message, {
           autoHideDuration: 3000,
@@ -322,7 +337,7 @@ const User = () => {
     getDes();
     getMdouleRole();
     getAllUsers();
-  }, [auth?.user?.data]);
+  }, [auth?.user?.data?.token]);
 
   return (
     <>
@@ -416,10 +431,13 @@ const User = () => {
                   <Grid container spacing={2}>
                     {formData.userModule.map(
                       (userModule: any, index: any, arr: any) => {
+                        const isFirstModule = index === 0;
+                        const isLastModule = index === arr.length - 1;
+
                         return (
-                          <>
+                          <React.Fragment key={index}>
                             <Grid item xs={4}>
-                              <Typography variant="body2" fontWeight={"bold"}>
+                              <Typography variant="body2" fontWeight="bold">
                                 Select Module
                               </Typography>
                               <Select
@@ -433,7 +451,7 @@ const User = () => {
                                   );
                                 }}
                                 fullWidth
-                                // value={userModule.moduleId}
+                                value={userModule.moduleId}
                                 MenuProps={MenuProps}
                               >
                                 <MenuItem disabled value="">
@@ -451,7 +469,7 @@ const User = () => {
                               </Select>
                             </Grid>
                             <Grid item xs={4}>
-                              <Typography variant="body2" fontWeight={"bold"}>
+                              <Typography variant="body2" fontWeight="bold">
                                 Select Roles
                               </Typography>
 
@@ -459,7 +477,6 @@ const User = () => {
                                 multiple
                                 value={userModule.roleId}
                                 onChange={(e: any) => {
-                                  console.log(e.target.value, "EEEEEEEEEEEE");
                                   handleChange(index, "roleId", e.target.value);
                                 }}
                                 input={<OutlinedInput size="small" fullWidth />}
@@ -486,75 +503,32 @@ const User = () => {
                                     ));
                                   })}
                               </Select>
-                              {/* <Select
-                                labelId="demo-multiple-checkbox-label"
-                                id="demo-multiple-checkbox"
-                                multiple
-                                value={userModule.roleId}
-                                onChange={(e: any) => {
-                                  handleChange(index, "roleId", e.target.value);
-                                }}
-                                input={<OutlinedInput size="small" fullWidth />}
-                                inputProps={{ "aria-label": "Without label" }}
-                                renderValue={(selected) => selected.join(", ")}
-                              >
-                                <MenuItem disabled value="">
-                                  Select Roles
-                                </MenuItem>
-                                {moduleRole
-                                  .filter(
-                                    (e: any) =>
-                                      e.moduleId === userModule.moduleId &&
-                                      e.moduleId === userModule.moduleId
-                                  )
-                                  .map((role: any) => {
-                                    return role.role.map((roles: any) => (
-                                      // <MenuItem
-                                      //   key={roles.roleId}
-                                      //   value={roles.roleId}
-                                      // >
-                                      //   {roles.name}
-                                      // </MenuItem>
-                                      <MenuItem
-                                        key={roles.roleId}
-                                        value={roles.roleId}
-                                      >
-                                        <Checkbox
-                                          checked={
-                                            userModule.roleId.indexOf(roles) > -1
-                                          }
-                                        />
-                                        <ListItemText primary={roles.name} />
-                                      </MenuItem>
-                                    ));
-                                  })}
-                              </Select> */}
                             </Grid>
 
                             <Grid mt={2} item xs={2}>
-                              <Button
-                                onClick={() => handleAdd(index)}
-                                disabled={!formData}
-                                variant="contained"
-                              >
-                                Add
-                              </Button>
+                              {isLastModule && (
+                                <Button
+                                  onClick={() => handleAdd(index)}
+                                  disabled={!formData}
+                                  variant="contained"
+                                >
+                                  Add
+                                </Button>
+                              )}
                             </Grid>
 
-                            {userModule.moduleId &&
-                              userModule.roleId.length > 0 &&
-                              index > 0 && (
-                                <Grid mt={2} item xs={2}>
-                                  <Button
-                                    color="error"
-                                    onClick={() => handleDelete(index, arr)}
-                                    variant="contained"
-                                  >
-                                    Delete
-                                  </Button>
-                                </Grid>
-                              )}
-                          </>
+                            {(!isFirstModule || arr.length > 1) && (
+                              <Grid mt={2} item xs={2}>
+                                <Button
+                                  color="error"
+                                  onClick={() => handleDelete(index, arr)}
+                                  variant="contained"
+                                >
+                                  Delete
+                                </Button>
+                              </Grid>
+                            )}
+                          </React.Fragment>
                         );
                       }
                     )}

@@ -14,6 +14,8 @@ import {
 import { enqueueSnackbar } from "notistack";
 import React, { useState } from "react";
 
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -34,7 +36,6 @@ const UpdateUserForm = ({
 }: any) => {
   const auth: any = useAuth();
 
-  console.log(auth, "Autthhhhhh");
 
   const [errors, setErrors] = useState({
     email: "",
@@ -54,7 +55,6 @@ const UpdateUserForm = ({
     }),
   });
 
-  console.log(formData, "FORMDATA");
 
   const handleChange1 = (field: string, value: any) => {
     if (field === "email") {
@@ -136,7 +136,6 @@ const UpdateUserForm = ({
         config.data
       );
 
-      console.log(response, "RESPONSE");
       if (response.success) {
         enqueueSnackbar(response.message, {
           autoHideDuration: 3000,
@@ -152,6 +151,10 @@ const UpdateUserForm = ({
       close();
     } catch (error: any) {
       console.error(error);
+      enqueueSnackbar(error.message, {
+        autoHideDuration: 3000,
+        variant: "error",
+      });
     }
   };
 
@@ -174,8 +177,7 @@ const UpdateUserForm = ({
     // setFormData({
     //   ...formData,
     //   userModule: updatedUserModules,
-    // });
-
+    // })
     const newArray = [...arr.slice(0, index), ...arr.slice(index + 1)];
     setFormData({
       ...formData,
@@ -214,7 +216,7 @@ const UpdateUserForm = ({
                 size="small"
                 fullWidth
                 value={formData.email}
-                disabled
+                // disabled
                 onChange={(e) => handleChange1("email", e.target.value)}
                 error={!!errors.email}
                 helperText={errors.email}
@@ -251,10 +253,11 @@ const UpdateUserForm = ({
 
             {formData.userModule.map(
               (userModule: any, index: any, arr: any) => {
-                console.log(formData.userModule.length, "USER MODULE");
+                const isFirstModule = index === 0;
+                const isLastModule = index === arr.length - 1;
                 return (
                   <>
-                    <Grid item xs={index > 0 ? 4 : 4}>
+                    <Grid item xs={4}>
                       <Typography variant="body2" fontWeight={"bold"}>
                         Module Name
                       </Typography>
@@ -284,7 +287,7 @@ const UpdateUserForm = ({
                       </Select>
                     </Grid>
 
-                    <Grid item xs={index > 0 ? 4 : 4}>
+                    <Grid item xs={4}>
                       <Typography variant="body2" fontWeight={"bold"}>
                         Roles
                       </Typography>
@@ -319,8 +322,8 @@ const UpdateUserForm = ({
                       </Select>
                     </Grid>
 
-                    { 
-                      <Grid mt={2} item xs={2}>
+                    <Grid mt={2} item xs={2}>
+                      {isLastModule && (
                         <Button
                           onClick={() => handleAdd(index)}
                           disabled={!formData}
@@ -328,9 +331,10 @@ const UpdateUserForm = ({
                         >
                           Add
                         </Button>
-                      </Grid>
-                    }
-                    {formData.userModule.length !== 1 && (
+                      )}
+                    </Grid>
+
+                    {(!isFirstModule || arr.length > 1) && (
                       <Grid mt={2} item xs={2}>
                         <Button
                           color="error"
@@ -363,7 +367,7 @@ const UpdateUserForm = ({
             !!errors.contactNumber
           }
         >
-          Update User
+          <ModeEditIcon sx={{ mr: 1 }} /> Update User
         </Button>
       </Box>
     </Box>

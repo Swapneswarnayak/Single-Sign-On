@@ -12,6 +12,9 @@ import {
 import { enqueueSnackbar } from "notistack";
 import React, { useState } from "react";
 
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -27,9 +30,9 @@ const UpdateModuleRoles = ({
   selectedModuleRole,
   moduleData,
   roleData,
-  close
+  close,
+  updateFn
 }: any) => {
-  console.log(selectedModuleRole, "SELECTED  MODULE ROLE ");
 
   const auth:any = useAuth()
 
@@ -53,7 +56,7 @@ const UpdateModuleRoles = ({
         url: `/api/v1/module-role/update`,
         method: "PUT",
         headers: {
-          Authorization: `Bearer ${auth.user.token}`,
+          Authorization: `Bearer ${auth.user.data.token}`,
         },
         data: formData,
       };
@@ -71,6 +74,7 @@ const UpdateModuleRoles = ({
         });
         // getModuleRole();
         // router.refresh()
+        updateFn()
       } else {
         enqueueSnackbar(response?.message, {
           autoHideDuration: 3000,
@@ -93,7 +97,7 @@ const UpdateModuleRoles = ({
         Update Modules
       </Typography>
       <Grid container spacing={1} my={2}>
-        <Grid item xs={5}>
+        <Grid item xs={4}>
           <FormControl fullWidth>
             <Typography variant="body1" fontWeight={"bold"}>
               Module
@@ -120,7 +124,7 @@ const UpdateModuleRoles = ({
           </FormControl>
         </Grid>
 
-        <Grid item xs={5}>
+        <Grid item xs={4}>
           <FormControl fullWidth>
             <Typography variant="body1" fontWeight={"bold"}>
               Roles
@@ -140,13 +144,13 @@ const UpdateModuleRoles = ({
             </Select>
           </FormControl>
         </Grid>
-        <Grid mt={2.5} item xs={2}>
+        <Grid mt={2.5} item xs={4}>
           <Button
             disabled={!formData.moduleId || !formData.roleId}
             variant="contained"
             onClick={handleSubmit}
           >
-            Update
+            <ModeEditIcon sx={{ mr: 1 }} /> Update
           </Button>
         </Grid>
       </Grid>

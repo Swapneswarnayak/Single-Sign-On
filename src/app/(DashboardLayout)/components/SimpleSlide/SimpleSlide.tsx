@@ -34,7 +34,7 @@ export default function SimpleSlide() {
       setModuleList(fetchedData.data.data);
 
     } catch (err: any) {
-      console.log(err);
+      console.error(err);
     }
 
     // return;
@@ -45,19 +45,16 @@ export default function SimpleSlide() {
     loginLink: any,
     redirectLink: any
   ) => {
-    console.log(moduleList);
     try {
       let res: any = await axios.post(loginLink, {
         email: tokenStr.email,
         role,
         bodyData: moduleList,
       });
-      console.log(res, "running1");
       handlePostUserData(res.data, redirectLink);
       // data.user.role.name = role;
-      console.log(res, "responseddddd");
     } catch (err: any) {
-      console.log(err, "error");
+      console.error(err, "error");
     }
   };
 
@@ -78,10 +75,8 @@ export default function SimpleSlide() {
       localStorage.setItem("sessionObj", JSON.stringify(sessionObject));
       push(`${redirectlink}?xml=${sessionId}`);
     } catch (err: any) {
-      console.log(err, "error");
+      console.error(err, "error");
     }
-
-    console.log("running2");
   }; 
 
   React.useEffect(() => {

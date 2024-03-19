@@ -1,12 +1,13 @@
 "use client";
 import { styled, Container, Box } from "@mui/material";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import Header from "@/app/(DashboardLayout)/layout/header/Header";
 import Sidebar from "@/app/(DashboardLayout)/layout/sidebar/Sidebar";
 import { usePathname } from "next/navigation";
 import AuthProvider, {
   useAuth,
 } from "@/contexts/JWTContext/AuthContext.provider";
+import LinearProgress from "@mui/material/LinearProgress";
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
@@ -37,6 +38,7 @@ export default function RootLayout({
   const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const path = usePathname();
 
+
   return (
     <AuthProvider>
       {path === "/" || path === "/passwordReset" || path === "/forgot" ? (
@@ -55,7 +57,6 @@ export default function RootLayout({
               toggleMobileSidebar={() => setMobileSidebarOpen(true)}
               sx={{ display: "none" }}
             />
-
             <Container
               sx={{
                 flex: 1,

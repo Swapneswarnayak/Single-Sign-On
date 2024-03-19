@@ -27,6 +27,18 @@ import UpdateModuleRoles from "../components/forms/UpdateModuleRoles/UpdateModul
 import CreateIcon from "@mui/icons-material/Create";
 import CloseIcon from "@mui/icons-material/Close";
 
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
 const Page = () => {
   const auth: any = useAuth();
   const router = useRouter();
@@ -42,6 +54,7 @@ const Page = () => {
   const [selectedModuleRole, setSelectedModuleRole] = useState([]);
 
   const handleDialogClose = () => setOpen(false);
+
 
   const column: GridColDef[] = [
     {
@@ -63,9 +76,8 @@ const Page = () => {
       headerClassName: "super-app-theme--header",
       width: 550,
       renderCell: (params) => {
-        console.log(params, "PARAMS");
         return (
-          <Typography style={{ whiteSpace: "pre-wrap" }}>
+          <Typography variant="body2" style={{ whiteSpace: "pre-wrap" }}>
             {params.row.role.map((el: any, index: number) => (
               <React.Fragment key={el.role.id}>
                 {el.role.name}
@@ -82,7 +94,6 @@ const Page = () => {
       headerClassName: "super-app-theme--header",
       width: 100,
       renderCell: (params) => {
-        console.log(params, "param");
         return (
           <IconButton onClick={() => handleEdit(params.row)}>
             <CreateIcon />
@@ -109,7 +120,7 @@ const Page = () => {
         url: `/api/v1/module-role/create`,
         method: "POST",
         headers: {
-          Authorization: `Bearer ${auth.user.token}`,
+          Authorization: `Bearer ${auth?.user?.data?.token}`,
         },
         data: formData,
       };
@@ -209,7 +220,6 @@ const Page = () => {
     getModuleRole();
   }, [auth.user?.data?.token]);
 
-  console.log(formData, "moduleUser Data");
 
   return (
     <>
@@ -229,6 +239,7 @@ const Page = () => {
                   onChange={(e) => handleFormChange("moduleId", e.target.value)}
                   size="small"
                   value={formData.moduleId}
+                  MenuProps={MenuProps}
                 >
                   {moduleData.map((el: any, i: any) => (
                     <MenuItem key={i} value={el.moduleId}>
@@ -249,6 +260,7 @@ const Page = () => {
                   onChange={(e) => handleFormChange("roleId", e.target.value)}
                   size="small"
                   value={formData.roleId}
+                  MenuProps={MenuProps}
                 >
                   {roleData.map((el: any, i: any) => (
                     <MenuItem key={i} value={el.roleId}>
@@ -273,7 +285,7 @@ const Page = () => {
 
       <DashboardCard>
         <>
-          <Typography variant="h4" fontWeight={"bold"} mb={3}>
+          <Typography variant="h5" fontWeight={"bold"} mb={3}>
             List Of Module/Roles
           </Typography>
           <Box
@@ -323,6 +335,7 @@ const Page = () => {
                 moduleData={moduleData}
                 roleData={roleData}
                 close={handleDialogClose}
+                updateFn={getModuleRole}
               />
             </DialogContent>
           </Dialog>

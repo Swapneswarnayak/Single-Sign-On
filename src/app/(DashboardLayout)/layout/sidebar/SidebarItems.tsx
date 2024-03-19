@@ -12,7 +12,6 @@ const SidebarItems = ({ toggleMobileSidebar }: any) => {
 
   const userRole = auth?.user?.data?.role;
 
-  console.log(userRole, "role");
 
   return (
     <Box sx={{ px: 3 }}>

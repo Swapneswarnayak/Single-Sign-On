@@ -72,7 +72,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
             const sessionObject = JSON.parse(
               localStorage.getItem("sessionObj") || ""
             );
-            console.log(sessionObject, "object");
             checkSessionExist(sessionObject);
           }
 
@@ -114,9 +113,8 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       } else {
         localStorage.removeItem("sessionObj");
       }
-      console.log(response, "response from check session");
     } catch (err: any) {
-      console.log(err, "error");
+      console.error(err, "error");
     }
   };
 
@@ -155,7 +153,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       const user = response.data;
       localStorage.setItem("login", JSON.stringify(user));
 
-      console.log(response, "RESPO");
       dispatch({
         type: SIGN_IN,
         payload: {

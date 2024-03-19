@@ -29,7 +29,6 @@ const AdminDashboard = () => {
     };
     try {
       let res = await axiosApi(config.url, config.method, config.headers);
-      console.log(res);
 
       setDashData(res.data);
     } catch (error) {
