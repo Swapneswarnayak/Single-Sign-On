@@ -111,7 +111,7 @@ const User = () => {
       width: 200,
       renderCell: (params) => {
         return params.row.modules.map((module: any, index: any) => (
-          <Typography style={{ whiteSpace: "pre-wrap" }} variant="body2">
+          <Typography key={index} style={{ whiteSpace: "pre-wrap" }} variant="body2">
             {module.name}
             {index < params.row.modules.length - 1 && ", "}
           </Typography>
@@ -414,6 +414,7 @@ const User = () => {
                     value={formData.designationId}
                     fullWidth
                     size="small"
+                    MenuProps={MenuProps}
                   >
                     {des.map((element: any, i: any) => (
                       <MenuItem key={i} value={element.designationId}>
@@ -549,7 +550,8 @@ const User = () => {
                   !formData.designationId ||
                   !formData.userModule ||
                   !!errors.email ||
-                  !!errors.contactNumber
+                  !!errors.contactNumber||
+                  !formData.userModule.length
                 }
               >
                 Create User
@@ -564,6 +566,8 @@ const User = () => {
             sx={{
               "& .super-app-theme--header": {
                 backgroundColor: "#bccdfb",
+                fontSize:"14px",
+                fontWeight:"bold"
               },
             }}
           >
@@ -589,13 +593,13 @@ const User = () => {
               disableRowSelectionOnClick
             />
           </Box>
-          <Dialog open={open}>
+          <Dialog  open={open}>
             <Button
               onClick={handleDialogClose}
               variant="contained"
               sx={{
                 position: "absolute",
-                backgroundColor: "red",
+                backgroundColor: "red", 
                 right: 0,
                 "&:hover": { backgroundColor: "red" },
               }}

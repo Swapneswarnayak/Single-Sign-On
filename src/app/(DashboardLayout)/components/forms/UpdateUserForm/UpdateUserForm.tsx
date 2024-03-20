@@ -41,6 +41,7 @@ const UpdateUserForm = ({
     email: "",
     contactNumber: "",
   });
+
   const [formData, setFormData] = useState({
     name: userData.userName ? userData.userName : "",
     email: userData.email ? userData.email : "",
@@ -186,7 +187,7 @@ const UpdateUserForm = ({
   };
 
   return (
-    <Box>
+    <Box >
       <Typography variant="h5" fontWeight={"bold"} mb={2}>
         Update User
       </Typography>
@@ -364,10 +365,11 @@ const UpdateUserForm = ({
             !formData.contactNumber ||
             !formData.designation ||
             !!errors.email ||
-            !!errors.contactNumber
+            !!errors.contactNumber ||
+            !formData.userModule.length
           }
         >
-          <ModeEditIcon sx={{ mr: 1 }} /> Update User
+          <ModeEditIcon sx={{ mr: 0.5 }} /> Update User
         </Button>
       </Box>
     </Box>

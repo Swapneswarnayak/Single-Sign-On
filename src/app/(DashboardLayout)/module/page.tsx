@@ -132,7 +132,7 @@ const Page = () => {
   return (
     <DashboardCard>
       <>
-        {/* <Typography variant="h4" fontWeight={"bold"} mb={3}>
+        <Typography variant="h4" fontWeight={"bold"} mb={3}>
           Create Module
         </Typography>
         <Grid container spacing={2} columns={12}>
@@ -194,7 +194,7 @@ const Page = () => {
               Submit
             </Button>
           </Grid>
-        </Grid> */}
+        </Grid>
         
         <Grid
           item

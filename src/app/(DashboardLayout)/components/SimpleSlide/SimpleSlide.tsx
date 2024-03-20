@@ -84,6 +84,9 @@ export default function SimpleSlide() {
   }, [tokenStr]);
 
 
+  console.log(moduleList,"ModuleLIst")
+
+
   return (
     <Box
       sx={{

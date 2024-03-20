@@ -293,6 +293,8 @@ const Page = () => {
               mt: 4,
               "& .super-app-theme--header": {
                 backgroundColor: "#bccdfb",
+                fontSize:"14px",
+                fontWeight:"bold"
               },
             }}
           >

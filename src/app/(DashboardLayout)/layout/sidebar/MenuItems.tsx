@@ -41,7 +41,7 @@ const Menuitems: any = [
     id: uniqueId(),
     title: "Create User",
     icon: AdminPanelSettingsIcon,
-    href: "/user",
+    href: "/createUser",
   },
 ];
 
