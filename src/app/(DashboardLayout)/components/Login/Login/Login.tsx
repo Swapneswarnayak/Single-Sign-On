@@ -86,7 +86,7 @@ function EmpLogin({ back }: any) {
 
   const [captchaSvg, setCaptchaSvg] = useState("");
   const [captchaToken, setCaptchaToken] = useState("");
-  const [capchaCode,setCapchaCode]=useState("")
+  const [capchaCode, setCapchaCode] = useState("");
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
@@ -108,28 +108,32 @@ function EmpLogin({ back }: any) {
       return;
     }
     try {
-      const res: any = await auth.signIn(email, password, captchaToken, capchaCode);
+      const res: any = await auth.signIn(
+        email,
+        password,
+        captchaToken,
+        capchaCode
+      );
 
       if (res.success) {
         enqueueSnackbar(res?.message, {
           autoHideDuration: 3000,
           variant: "success",
         });
-        getCaptcha()
-      }
-      else if(!res.status){
+        getCaptcha();
+      } else if (!res.status) {
         enqueueSnackbar(res?.message, {
           autoHideDuration: 3000,
           variant: "error",
         });
-        getCaptcha()
+        getCaptcha();
       }
     } catch (error: any) {
       enqueueSnackbar(error?.message, {
         autoHideDuration: 3000,
         variant: "error",
       });
-      refreshCaptcha()
+      refreshCaptcha();
     }
   };
 
@@ -177,7 +181,6 @@ function EmpLogin({ back }: any) {
     setCaptchaText(captcha);
     return captcha;
   }
-
 
   useEffect(() => {
     getCaptcha();
@@ -242,7 +245,7 @@ function EmpLogin({ back }: any) {
             justifyContent: "center",
           }}
         >
-          (Super Admin Panel)
+          (UPSC Login Panel)
         </Typography>
 
         <Box
@@ -267,7 +270,7 @@ function EmpLogin({ back }: any) {
               color: "#fff900",
             }}
           >
-            Super Admin Login
+            Login
           </Typography>
         </Box>
         <Box>
