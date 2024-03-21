@@ -50,17 +50,25 @@ const Dashboard = () => {
   //   getRoleList()
   // },[])
 
+  if (loginRole == undefined) {
+    return (
+      <Box sx={{ width: "fit-content", margin: "10% auto" }}>
+        <img src="./Spin.gif" alt="Loader" />
+      </Box>
+    );
+  }
+
   return (
     <Box>
       <>
         <Box sx={{ flexGrow: 1 }}>
-          {loginRole != "user" ? (
+          {/* {loginRole != "user" ? (
             <>
               <AdminDashboard />
             </>
-          ) : (
-            <SimpleSlide />
-          )}
+          ) : ( */}
+          <SimpleSlide />
+          {/* )} */}
         </Box>
       </>
     </Box>
