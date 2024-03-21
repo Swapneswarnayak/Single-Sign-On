@@ -153,7 +153,6 @@ const User = () => {
   const [roleId, setRoleID] = useState<any>("");
   const [moduleId, setModuleId] = useState<any>("");
 
-
   const getDes = async () => {
     const config = {
       url: `/api/v1/designation`,
@@ -182,7 +181,7 @@ const User = () => {
     try {
       let res = await axiosApi(config.url, config.method, config.headers);
 
-      const filter = res.data.filter((e:any)=> e.moduleId !== moduleId)
+      const filter = res.data.filter((e: any) => e.moduleId !== moduleId);
 
       setModuleRoleData(filter);
     } catch (error) {
@@ -228,7 +227,7 @@ const User = () => {
           : "Invalid contact number format (10 digits)",
       }));
     }
-    setFormData((prevData) => ({
+    setFormData((prevData: any) => ({
       ...prevData,
       [field]: value,
     }));
@@ -348,9 +347,6 @@ const User = () => {
     "jerhtghjrke"
   );
 
-
-
-
   return (
     <>
       <DashboardCard>
@@ -456,7 +452,7 @@ const User = () => {
                               <Select
                                 size="small"
                                 onChange={(e: any) => {
-                                  setModuleId(e.target.value)
+                                  setModuleId(e.target.value);
                                   handleChange(
                                     index,
                                     "moduleId",
@@ -526,7 +522,10 @@ const User = () => {
                                     setRoleID("");
                                     handleAdd(index);
                                   }}
-                                  disabled={!userModule.moduleId || !userModule.roleId.length > 0}
+                                  disabled={
+                                    !userModule.moduleId ||
+                                    !(userModule.roleId.length > 0)
+                                  }
                                   variant="contained"
                                 >
                                   Add
@@ -539,7 +538,9 @@ const User = () => {
                                 <Button
                                   color="error"
                                   onClick={() => {
-                                    setRoleID(formData.userModule[index].roleId[index]);
+                                    setRoleID(
+                                      formData.userModule[index].roleId[index]
+                                    );
                                     handleDelete(index, arr);
                                   }}
                                   variant="contained"
