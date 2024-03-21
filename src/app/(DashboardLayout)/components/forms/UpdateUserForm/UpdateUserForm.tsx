@@ -57,6 +57,9 @@ const UpdateUserForm = ({
   });
 
 
+  console.log(formData.userModule, "Form Data")
+
+
   const handleChange1 = (field: string, value: any) => {
     if (field === "email") {
       const isValidEmail = /^\S+@\S+\.\S+$/.test(value);
@@ -327,7 +330,8 @@ const UpdateUserForm = ({
                       {isLastModule && (
                         <Button
                           onClick={() => handleAdd(index)}
-                          disabled={!formData}
+                          disabled={!userModule.moduleId  || !userModule.roleId.length > index}
+                  
                           variant="contained"
                         >
                           Add

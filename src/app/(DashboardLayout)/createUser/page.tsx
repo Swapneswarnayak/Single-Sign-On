@@ -45,14 +45,13 @@ const User = () => {
   const router = useRouter();
 
   const [des, setDes] = useState([]);
-  const [role, setRole] = useState([]);
   const [moduleRole, setModuleRoleData] = useState([]);
   const [errors, setErrors] = useState({
     email: "",
     contactNumber: "",
   });
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     name: "",
     email: "",
     contactNumber: "",
@@ -64,6 +63,7 @@ const User = () => {
       },
     ],
   });
+
   const [userData, setUserData] = useState([]);
 
   const [open, setOpen] = useState(false);
@@ -77,8 +77,6 @@ const User = () => {
     setOpen(true);
   };
 
-
-  console.log(auth, "AUTHHHHH")
   const column: GridColDef[] = [
     {
       field: "id",
@@ -111,7 +109,11 @@ const User = () => {
       width: 200,
       renderCell: (params) => {
         return params.row.modules.map((module: any, index: any) => (
-          <Typography key={index} style={{ whiteSpace: "pre-wrap" }} variant="body2">
+          <Typography
+            key={index}
+            style={{ whiteSpace: "pre-wrap" }}
+            variant="body2"
+          >
             {module.name}
             {index < params.row.modules.length - 1 && ", "}
           </Typography>
@@ -148,7 +150,9 @@ const User = () => {
     setSelectedUser(data);
     handleDialogOpen();
   };
-  const [moduleId, setModuleID] = useState("");
+  const [roleId, setRoleID] = useState<any>("");
+  const [moduleId, setModuleId] = useState<any>("");
+
 
   const getDes = async () => {
     const config = {
@@ -175,11 +179,12 @@ const User = () => {
         Authorization: `Bearer ${auth?.user?.data?.token}`,
       },
     };
-    try { 
-
+    try {
       let res = await axiosApi(config.url, config.method, config.headers);
 
-      setModuleRoleData(res?.data);
+      const filter = res.data.filter((e:any)=> e.moduleId !== moduleId)
+
+      setModuleRoleData(filter);
     } catch (error) {
       console.error(error);
     }
@@ -200,7 +205,6 @@ const User = () => {
         ...e,
         id: i + 1,
       }));
-
 
       setUserData(resData);
     } catch (error) {
@@ -339,12 +343,20 @@ const User = () => {
     getAllUsers();
   }, [auth?.user?.data?.token]);
 
+  console.log(
+    !formData.userModule.map((e: any) => e.roleId.length === 0),
+    "jerhtghjrke"
+  );
+
+
+
+
   return (
     <>
       <DashboardCard>
         <>
           <Typography
-            mb={2}
+            mb={1}
             variant="h5"
             fontWeight="bold"
             color="#000"
@@ -444,7 +456,7 @@ const User = () => {
                               <Select
                                 size="small"
                                 onChange={(e: any) => {
-                                  setModuleID(e.target.value);
+                                  setModuleId(e.target.value)
                                   handleChange(
                                     index,
                                     "moduleId",
@@ -478,6 +490,7 @@ const User = () => {
                                 multiple
                                 value={userModule.roleId}
                                 onChange={(e: any) => {
+                                  setRoleID(e.target.value);
                                   handleChange(index, "roleId", e.target.value);
                                 }}
                                 input={<OutlinedInput size="small" fullWidth />}
@@ -509,8 +522,11 @@ const User = () => {
                             <Grid mt={2} item xs={2}>
                               {isLastModule && (
                                 <Button
-                                  onClick={() => handleAdd(index)}
-                                  disabled={!formData}
+                                  onClick={() => {
+                                    setRoleID("");
+                                    handleAdd(index);
+                                  }}
+                                  disabled={!userModule.moduleId || !userModule.roleId.length > 0}
                                   variant="contained"
                                 >
                                   Add
@@ -522,7 +538,10 @@ const User = () => {
                               <Grid mt={2} item xs={2}>
                                 <Button
                                   color="error"
-                                  onClick={() => handleDelete(index, arr)}
+                                  onClick={() => {
+                                    setRoleID(formData.userModule[index].roleId[index]);
+                                    handleDelete(index, arr);
+                                  }}
                                   variant="contained"
                                 >
                                   Delete
@@ -534,28 +553,30 @@ const User = () => {
                       }
                     )}
                   </Grid>
+
+                  <Grid
+                    container
+                    sx={{ display: "flex", justifyContent: "center", mt: 5 }}
+                  >
+                    <Button
+                      type="submit"
+                      onClick={handleSubmitUSer}
+                      variant="contained"
+                      disabled={
+                        !formData.name ||
+                        !formData.email ||
+                        !formData.contactNumber ||
+                        !formData.designationId ||
+                        !!errors.email ||
+                        !!errors.contactNumber ||
+                        !roleId
+                      }
+                    >
+                      Create User
+                    </Button>
+                  </Grid>
                 </Grid>
               </Grid>
-            </Grid>
-
-            <Grid container sx={{ display: "flex", justifyContent: "center" }}>
-              <Button
-                type="submit"
-                onClick={handleSubmitUSer}
-                variant="contained"
-                disabled={
-                  !formData.name ||
-                  !formData.email ||
-                  !formData.contactNumber ||
-                  !formData.designationId ||
-                  !formData.userModule ||
-                  !!errors.email ||
-                  !!errors.contactNumber||
-                  !formData.userModule.length
-                }
-              >
-                Create User
-              </Button>
             </Grid>
           </form>
         </>
@@ -566,8 +587,8 @@ const User = () => {
             sx={{
               "& .super-app-theme--header": {
                 backgroundColor: "#bccdfb",
-                fontSize:"14px",
-                fontWeight:"bold"
+                fontSize: "14px",
+                fontWeight: "bold",
               },
             }}
           >
@@ -593,13 +614,13 @@ const User = () => {
               disableRowSelectionOnClick
             />
           </Box>
-          <Dialog  open={open}>
+          <Dialog open={open}>
             <Button
               onClick={handleDialogClose}
               variant="contained"
               sx={{
                 position: "absolute",
-                backgroundColor: "red", 
+                backgroundColor: "red",
                 right: 0,
                 "&:hover": { backgroundColor: "red" },
               }}

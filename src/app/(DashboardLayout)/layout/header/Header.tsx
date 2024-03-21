@@ -27,7 +27,11 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
   const auth: any = useAuth();
   const router = useRouter();
 
-  const AppBarStyled = styled(AppBar)(({ theme }:any) => ({
+  console.log(auth, "AUTH");
+
+  const role = auth.user?.data?.role;
+
+  const AppBarStyled = styled(AppBar)(({ theme }: any) => ({
     boxShadow: "none",
     background: theme.palette.background.paper,
     justifyContent: "center",
@@ -36,13 +40,10 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
       minHeight: "70px",
     },
   }));
-  const ToolbarStyled = styled(Toolbar)(({ theme }:any) => ({
+  const ToolbarStyled = styled(Toolbar)(({ theme }: any) => ({
     width: "100%",
     color: theme.palette.text.secondary,
   }));
-
-
-
 
   // useEffect(() => {
   //   if (!auth?.isAuthenticated) {
@@ -66,6 +67,14 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
         >
           <IconMenu width="20" height="20" />
         </IconButton>
+
+        <Box ml={2}>
+          {role === "superAdmin" ? (
+            <Typography variant="h5">Super Admin Panel</Typography>
+          ) : (
+            <Typography>User Panel</Typography>
+          )}
+        </Box>
 
         <IconButton
           size="large"

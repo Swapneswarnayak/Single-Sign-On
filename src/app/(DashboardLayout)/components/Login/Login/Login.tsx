@@ -242,7 +242,7 @@ function EmpLogin({ back }: any) {
             justifyContent: "center",
           }}
         >
-          (Admin Panel)
+          (Super Admin Panel)
         </Typography>
 
         <Box

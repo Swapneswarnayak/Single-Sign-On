@@ -166,7 +166,12 @@ const Page = () => {
       // const res = await axios.get(`${BACKEND_BASE_URL}/api/v1/module`);
       let res: any = await axiosApi(config.url, config.method, config.headers);
 
+
+      const filterDAta = res.data.filter((e:any)=> e)
+      console.log(res.data," MODULE DATA")
+
       setModuleData(res.data);
+
     } catch (error) {
       console.error(error);
     }
@@ -203,12 +208,25 @@ const Page = () => {
     try {
       let res: any = await axiosApi(config.url, config.method, config.headers);
 
+      console.log(res.data,"MODULE ROLE LIST")
+
       const resData: any = res.data.map((e: any, i: any) => ({
         ...e,
         id: i + 1,
       }));
 
-      setModuleRoleData(resData);
+      const filterDAta = resData.filter((el:any)=> el.role.length!==0)
+
+      const filternotCreatedRole = resData.filter((el:any)=> el.role.length===0)
+
+
+      console.log(filternotCreatedRole, "FIlter Data")
+
+      setModuleRoleData(filterDAta);
+
+      setModuleData(filternotCreatedRole);
+
+
     } catch (error) {
       console.error(error);
     }
@@ -240,7 +258,7 @@ const Page = () => {
                   size="small"
                   value={formData.moduleId}
                   MenuProps={MenuProps}
-                >
+                > 
                   {moduleData.map((el: any, i: any) => (
                     <MenuItem key={i} value={el.moduleId}>
                       {el.name}
@@ -272,7 +290,7 @@ const Page = () => {
             </Grid>
             <Grid mt={2.5} item lg={6} xs={6}>
               <Button
-                disabled={!formData.moduleId || !formData.roleId}
+                disabled={!formData.moduleId || formData.roleId.length==0}
                 variant="contained"
                 onClick={handleSubmit}
               >
