@@ -102,7 +102,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     };
 
     initialize();
-  }, []);
+  }, [path]);
 
   const checkSessionExist = async (xml: any) => {
     try {
