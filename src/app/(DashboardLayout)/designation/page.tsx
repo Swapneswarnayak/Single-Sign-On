@@ -27,6 +27,7 @@ import UpdateDes from "../components/forms/UpdateDesignation/UpdateDesignation";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import CloseIcon from "@mui/icons-material/Close";
 
+
 const Page = () => {
   const auth: any = useAuth();
   const [formData, setFormData] = useState<any>({
@@ -244,6 +245,8 @@ const Page = () => {
               mt: 4,
               "& .super-app-theme--header": {
                 backgroundColor: "#bccdfb",
+                fontSize:"14px",
+                fontWeight:"bold"
               },
             }}
           >

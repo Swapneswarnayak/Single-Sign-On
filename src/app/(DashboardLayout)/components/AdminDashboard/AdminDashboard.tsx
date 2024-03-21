@@ -87,7 +87,7 @@ const AdminDashboard = () => {
             <Button
               size="small"
               sx={{ backgroundColor: "#eee", color: "#000" }}
-              onClick={()=> router.push("/module")}
+              onClick={()=> router.push("/moduleRole")}
             >
               See More
             </Button>
@@ -136,7 +136,7 @@ const AdminDashboard = () => {
               size="small"
               sx={{ backgroundColor: "#eee", color: "#000" }}
             //   href="/role"
-              onClick={()=> router.push("/role")}
+              onClick={()=> router.push("/moduleRole")}
             >
               See More
             </Button>
@@ -185,7 +185,7 @@ const AdminDashboard = () => {
               size="small"
               sx={{ backgroundColor: "#eee", color: "#000" }}
             //   href="/user"
-              onClick={()=> router.push("/user")}
+              onClick={()=> router.push("/createUser")}
             >
               See More
             </Button>

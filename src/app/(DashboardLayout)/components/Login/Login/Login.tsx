@@ -99,7 +99,7 @@ function EmpLogin({ back }: any) {
 
   const loginUser = async () => {
     if (password == "" || capchaCode == "") {
-      regenerateCaptcha();
+      refreshCaptcha();
 
       enqueueSnackbar("Please fill all fields", {
         autoHideDuration: 3000,
@@ -115,20 +115,21 @@ function EmpLogin({ back }: any) {
           autoHideDuration: 3000,
           variant: "success",
         });
+        getCaptcha()
       }
       else if(!res.status){
         enqueueSnackbar(res?.message, {
           autoHideDuration: 3000,
           variant: "error",
         });
-        regenerateCaptcha()
+        getCaptcha()
       }
     } catch (error: any) {
       enqueueSnackbar(error?.message, {
         autoHideDuration: 3000,
         variant: "error",
       });
-      regenerateCaptcha()
+      refreshCaptcha()
     }
   };
 
@@ -241,7 +242,7 @@ function EmpLogin({ back }: any) {
             justifyContent: "center",
           }}
         >
-          (Admin Panel)
+          (Super Admin Panel)
         </Typography>
 
         <Box
@@ -271,7 +272,7 @@ function EmpLogin({ back }: any) {
         </Box>
         <Box>
           <Typography variant="body1" sx={{ lineHeight: "9px" }}>
-            User Name (6 Digit Id)
+            User Name
           </Typography>
           <OutlinedInput
             // id="outlined-adornment-weight"
