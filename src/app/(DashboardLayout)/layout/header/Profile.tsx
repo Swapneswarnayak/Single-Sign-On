@@ -12,10 +12,17 @@ import {
   ListItemText,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { IconListCheck, IconMail, IconMarquee, IconUser } from "@tabler/icons-react";
+import {
+  IconListCheck,
+  IconMail,
+  IconMarquee,
+  IconUser,
+} from "@tabler/icons-react";
 import { useAuth } from "@/contexts/JWTContext/AuthContext.provider";
-import Marquee from "react-fast-marquee"
+import Marquee from "react-fast-marquee";
 
+import LockResetIcon from "@mui/icons-material/LockReset";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const Profile = () => {
   const auth: any = useAuth();
@@ -28,7 +35,6 @@ const Profile = () => {
   };
 
   const router = useRouter();
-
 
   return (
     <Box>
@@ -81,36 +87,33 @@ const Profile = () => {
           </ListItemText>
         </MenuItem>
         <MenuItem>
-        <Marquee>
-          <ListItemText sx={{mr:2}}>
-          {auth?.user?.data?.role && auth?.user?.data?.email}
-          </ListItemText>
+          <Marquee>
+            <ListItemText sx={{ mr: 2 }}>
+              {auth?.user?.data?.role && auth?.user?.data?.email}
+            </ListItemText>
           </Marquee>
         </MenuItem>
-        <Box mt={1} py={1} px={2}>
-          <Button
+
+        <MenuItem sx={{ my: 1 }}>
+          <ListItemIcon>
+            <LockResetIcon />
+          </ListItemIcon>
+          <ListItemText
             onClick={() => router.push("/passwordReset")}
-            variant="outlined"
-            color="error"
-            fullWidth
+            sx={{ mr: 2 }}
           >
             Reset Password
-          </Button>
-        </Box>
-        <Box mt={1} py={1} px={2}>
-          <Button
-            onClick={() =>
-              auth?.signOut(
-                auth?.user?.message?.includes("Admin") ? "admin" : "employee"
-              )
-            }
-            variant="outlined"
-            color="primary"
-            fullWidth
-          >
+          </ListItemText>
+        </MenuItem>
+
+        <MenuItem sx={{ my: 1 }}>
+          <ListItemIcon>
+            <LogoutIcon />
+          </ListItemIcon>
+          <ListItemText onClick={() => auth?.signOut()} sx={{ mr: 2 }}>
             Logout
-          </Button>
-        </Box>
+          </ListItemText>
+        </MenuItem>
       </Menu>
     </Box>
   );

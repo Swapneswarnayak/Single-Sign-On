@@ -16,7 +16,6 @@ import React, { useState } from "react";
 
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 
-
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -36,17 +35,16 @@ const UpdateUserForm = ({
 }: any) => {
   const auth: any = useAuth();
 
-
   const [errors, setErrors] = useState({
     email: "",
     contactNumber: "",
   });
 
   const [formData, setFormData] = useState({
-    name: userData.userName ? userData.userName : "",
-    email: userData.email ? userData.email : "",
-    contactNumber: userData.contactNumber ? userData.contactNumber : "",
-    designation: userData.designation.name ? userData.designation.name : "",
+    name: userData.userName || "",
+    email: userData.email || "",
+    contactNumber: userData.contactNumber || "",
+    designation: userData.designation.name || "",
     userModule: userData.modules.map((module: any) => {
       return {
         moduleId: module.moduleId,
@@ -56,9 +54,19 @@ const UpdateUserForm = ({
     }),
   });
 
+  const [flag, setFlag] = useState(false);
 
-  console.log(formData.userModule, "Form Data")
-
+  // const [formData, setFormData] = useState({
+  //   name:  "dfgh",
+  //   email: "frgthj@sgdfhgjh@gmsafdsdgf",
+  //   contactNumber:  "567898564567",
+  //   designation: "dfghj",
+  //   userModule:[{
+  //       moduleId: "sdfg",
+  //       name: "module.name,",
+  //       roleId: ["sadfg","sdfg"]
+  //   }],
+  // });
 
   const handleChange1 = (field: string, value: any) => {
     if (field === "email") {
@@ -82,6 +90,25 @@ const UpdateUserForm = ({
     }));
   };
 
+  // const handleChange = (index: any, field: any, value: any) => {
+  //   const updatedUserModules = [...formData.userModule];
+  //   if (field === "roleId") {
+  //     updatedUserModules[index] = {
+  //       ...updatedUserModules[index],
+  //       [field]: value,
+  //     };
+  //   }
+
+  //   updatedUserModules[index] = {
+  //     ...updatedUserModules[index],
+  //     [field]: value,
+  //   };
+  //   setFormData({
+  //     ...formData,
+  //     userModule: updatedUserModules,
+  //   });
+  // };
+
   const handleChange = (index: any, field: any, value: any) => {
     const updatedUserModules = [...formData.userModule];
     if (field === "roleId") {
@@ -100,25 +127,6 @@ const UpdateUserForm = ({
       userModule: updatedUserModules,
     });
   };
-
-  //   const handleChange = (index: any, field: any, value: any) => {
-  //     const updatedUserModules = [...formData.userModule];
-  //     if (field === "roleId") {
-  //       updatedUserModules[index] = {
-  //         ...updatedUserModules[index],
-  //         [field]: value,
-  //       };
-  //     }
-
-  //     updatedUserModules[index] = {
-  //       ...updatedUserModules[index],
-  //       [field]: value,
-  //     };
-  //     setFormData({
-  //       ...formData,
-  //       userModule: updatedUserModules,
-  //     });
-  //   };
 
   const handleUpdateUSer: any = async (e: any) => {
     e.preventDefault();
@@ -172,6 +180,7 @@ const UpdateUserForm = ({
       ...formData,
       userModule: updatedUserModules,
     });
+    setFlag(true);
   };
 
   const handleDelete = (index: number, arr: any) => {
@@ -187,10 +196,11 @@ const UpdateUserForm = ({
       ...formData,
       userModule: newArray,
     });
+    setFlag(false);
   };
 
   return (
-    <Box >
+    <Box>
       <Typography variant="h5" fontWeight={"bold"} mb={2}>
         Update User
       </Typography>
@@ -274,7 +284,6 @@ const UpdateUserForm = ({
                         fullWidth
                         value={userModule.moduleId}
                         MenuProps={MenuProps}
-
                       >
                         <MenuItem disabled value="">
                           Select Module
@@ -304,7 +313,6 @@ const UpdateUserForm = ({
                         input={<OutlinedInput size="small" fullWidth />}
                         inputProps={{ "aria-label": "Without label" }}
                         MenuProps={MenuProps}
-
                       >
                         <MenuItem disabled value="">
                           Select Module
@@ -330,8 +338,10 @@ const UpdateUserForm = ({
                       {isLastModule && (
                         <Button
                           onClick={() => handleAdd(index)}
-                          disabled={!userModule.moduleId  || !userModule.roleId.length > index}
-                  
+                          disabled={
+                            !userModule.moduleId ||
+                            !userModule.roleId.length > index
+                          }
                           variant="contained"
                         >
                           Add
@@ -370,7 +380,8 @@ const UpdateUserForm = ({
             !formData.designation ||
             !!errors.email ||
             !!errors.contactNumber ||
-            !formData.userModule.length
+            !formData.userModule.length ||
+            !flag
           }
         >
           <ModeEditIcon sx={{ mr: 0.5 }} /> Update User

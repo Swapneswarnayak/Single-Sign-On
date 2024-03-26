@@ -21,7 +21,7 @@ const Sidebar = ({
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
 
   const [roleNum, setRoleNum] = useState([]);
-  const sidebarWidth = "250px";
+  const sidebarWidth = "260px";
 
   const auth: any = useAuth();
 
@@ -35,7 +35,7 @@ const Sidebar = ({
     return (
       <Box
         sx={{
-          width: {xs:sidebarWidth, md: "250px"},
+          width: { xs: sidebarWidth, md: "250px" },
           flexShrink: 0,
         }}
       >
@@ -45,8 +45,9 @@ const Sidebar = ({
           variant="permanent"
           PaperProps={{
             sx: {
-              width: {xs:sidebarWidth, md: "250px"},
+              width: { xs: sidebarWidth, md: "260px" },
               boxSizing: "border-box",
+              backgroundColor: "#0A1D56",
             },
           }}
         >
@@ -58,11 +59,11 @@ const Sidebar = ({
             <Box textAlign={"center"} marginY={2} px={3}>
               <Box>
                 <Logo />
-                <Typography variant="h3" fontWeight={"bold"}>
+                <Typography color={"white"} variant="h3" fontWeight={"bold"}>
                   UPSC
                 </Typography>
               </Box>
-              <Typography my={1} variant="h6">
+              <Typography color={"white"} my={1} variant="h6">
                 Super Admin
               </Typography>
             </Box>
@@ -86,20 +87,22 @@ const Sidebar = ({
         sx: {
           width: sidebarWidth,
           boxShadow: (theme) => theme.shadows[8],
+          backgroundColor: "#11009E",
         },
       }}
     >
       {/* ------------------------------------------- */}
       {/* Logo */}
       {/* ------------------------------------------- */}
-  
-        <Box px={2}>
-          <Box textAlign={"center"} marginY={2} px={3}>
-            <h3>Single Sign On PANEL</h3>
-            <h3>Super Admin</h3>
-          </Box>
+
+      <Box px={2}>
+        <Box textAlign={"center"} marginY={1} px={3}>
+      <Logo />
+
+          <h3 style={{color:"white"}}>Single Sign On PANEL</h3>
+          <h3 style={{color:"white"}}>Super Admin</h3>
         </Box>
-    
+      </Box>
 
       {/* ------------------------------------------- */}
       {/* Sidebar For Mobile */}

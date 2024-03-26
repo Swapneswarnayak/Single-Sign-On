@@ -219,9 +219,6 @@ const Page = () => {
 
       const filternotCreatedRole = resData.filter((el:any)=> el.role.length===0)
 
-
-      console.log(filternotCreatedRole, "FIlter Data")
-
       setModuleRoleData(filterDAta);
 
       setModuleData(filternotCreatedRole);
@@ -352,7 +349,7 @@ const Page = () => {
             <DialogContent>
               <UpdateModuleRoles
                 selectedModuleRole={selectedModuleRole}
-                moduleData={moduleData}
+                moduleData={moduleRoleData}
                 roleData={roleData}
                 close={handleDialogClose}
                 updateFn={getModuleRole}

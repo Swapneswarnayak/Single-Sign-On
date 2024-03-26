@@ -108,6 +108,7 @@ const UpdateModuleRoles = ({
               size="small"
               value={formData.moduleId}
               MenuProps={MenuProps}
+              disabled
             >
               {moduleData.map((el: any, i: any) => (
                 <MenuItem key={i} value={el.moduleId}>

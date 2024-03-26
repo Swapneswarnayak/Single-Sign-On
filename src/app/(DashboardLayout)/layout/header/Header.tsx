@@ -70,9 +70,9 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
 
         <Box ml={2}>
           {role === "superAdmin" ? (
-            <Typography variant="h5">Super Admin Panel</Typography>
+            <Typography color='#31363F' fontWeight={"bold"} variant="h5">Super Admin Panel</Typography>
           ) : (
-            <Typography>User Panel</Typography>
+            <Typography color='#31363F' fontWeight={"bold"} variant="h5">User Panel</Typography>
           )}
         </Box>
 

@@ -40,18 +40,18 @@ const NavItem = ({ item, level, pathDirect, onClick }: ItemType) => {
     ".MuiButtonBase-root": {
       whiteSpace: "nowrap",
       marginBottom: "3px",
-      padding: "5px 8px",
+      padding: "8px 5px",
       borderRadius: "10px",
       backgroundColor: level > 1 ? "transparent !important" : "inherit",
-      color: theme.palette.text.secondary,
-      paddingLeft: "10px",
+      // color: theme.palette.text.secondary,
+      color: "white",
       "&:hover": {
         backgroundColor: theme.palette.primary.light,
         color: theme.palette.primary.main,
       },
       "&.Mui-selected": {
         color: "white",
-        backgroundColor: theme.palette.primary.main,
+        backgroundColor: "#4942E4",
         "&:hover": {
           backgroundColor: theme.palette.primary.main,
           color: "white",
@@ -74,7 +74,7 @@ const NavItem = ({ item, level, pathDirect, onClick }: ItemType) => {
           <ListItemIcon
             sx={{
               minWidth: "30px",
-              p: "3px 0",
+              pl: 1,
               color: "inherit",
             }}
           >

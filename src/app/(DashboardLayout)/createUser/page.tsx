@@ -150,9 +150,7 @@ const User = () => {
     setSelectedUser(data);
     handleDialogOpen();
   };
-  const [roleId, setRoleID] = useState<any>("");
   const [moduleId, setModuleId] = useState<any>("");
-
 
   const getDes = async () => {
     const config = {
@@ -182,7 +180,7 @@ const User = () => {
     try {
       let res = await axiosApi(config.url, config.method, config.headers);
 
-      const filter = res.data.filter((e:any)=> e.moduleId !== moduleId)
+      const filter = res.data.filter((e: any) => e.moduleId !== moduleId);
 
       setModuleRoleData(filter);
     } catch (error) {
@@ -228,11 +226,13 @@ const User = () => {
           : "Invalid contact number format (10 digits)",
       }));
     }
-    setFormData((prevData) => ({
+    setFormData((prevData: any) => ({
       ...prevData,
       [field]: value,
     }));
   };
+
+  const [roleId, setRoleId] = useState("");
 
   const handleChange = (index: any, field: any, value: any) => {
     const updatedUserModules = [...formData.userModule];
@@ -262,29 +262,24 @@ const User = () => {
       moduleId: "",
       roleId: [],
     });
+
+    console.log(updatedUserModules, "Updated Module");
     setFormData({
       ...formData,
       userModule: updatedUserModules,
     });
   };
 
-  const handleDelete = (index: number, arr: any) => {
-    // const updatedUserModules = formData.userModule.filter(
-    //   (_, i) => i !== index
-    // );
-    // setFormData({
-    //   ...formData,
-    //   userModule: updatedUserModules,
-    // });
-
-    const newArray = [...arr.slice(0, index), ...arr.slice(index + 1)];
+  const handleDelete = (index: number, arr: any[]) => {
+    const updatedModules = [...formData.userModule];
+    updatedModules.splice(index, 1);
     setFormData({
       ...formData,
-      userModule: newArray,
+      userModule: updatedModules,
     });
   };
 
-  const handleSubmitUSer = async (e: any) => {
+  const handleSubmitUser = async (e: any) => {
     e.preventDefault();
 
     try {
@@ -343,13 +338,8 @@ const User = () => {
     getAllUsers();
   }, [auth?.user?.data?.token]);
 
-  console.log(
-    !formData.userModule.map((e: any) => e.roleId.length === 0),
-    "jerhtghjrke"
-  );
 
-
-
+  console.log(roleId, "ROLE ID")
 
   return (
     <>
@@ -446,7 +436,6 @@ const User = () => {
                       (userModule: any, index: any, arr: any) => {
                         const isFirstModule = index === 0;
                         const isLastModule = index === arr.length - 1;
-
                         return (
                           <React.Fragment key={index}>
                             <Grid item xs={4}>
@@ -456,7 +445,7 @@ const User = () => {
                               <Select
                                 size="small"
                                 onChange={(e: any) => {
-                                  setModuleId(e.target.value)
+                                  setModuleId(e.target.value);
                                   handleChange(
                                     index,
                                     "moduleId",
@@ -490,7 +479,7 @@ const User = () => {
                                 multiple
                                 value={userModule.roleId}
                                 onChange={(e: any) => {
-                                  setRoleID(e.target.value);
+                                  setRoleId(e.target.value);
                                   handleChange(index, "roleId", e.target.value);
                                 }}
                                 input={<OutlinedInput size="small" fullWidth />}
@@ -523,10 +512,13 @@ const User = () => {
                               {isLastModule && (
                                 <Button
                                   onClick={() => {
-                                    setRoleID("");
                                     handleAdd(index);
+                                    setRoleId("");
                                   }}
-                                  disabled={!userModule.moduleId || !userModule.roleId.length > 0}
+                                  disabled={
+                                    !userModule.moduleId ||
+                                    !(userModule.roleId.length > 0)
+                                  }
                                   variant="contained"
                                 >
                                   Add
@@ -539,7 +531,6 @@ const User = () => {
                                 <Button
                                   color="error"
                                   onClick={() => {
-                                    setRoleID(formData.userModule[index].roleId[index]);
                                     handleDelete(index, arr);
                                   }}
                                   variant="contained"
@@ -560,7 +551,7 @@ const User = () => {
                   >
                     <Button
                       type="submit"
-                      onClick={handleSubmitUSer}
+                      onClick={handleSubmitUser}
                       variant="contained"
                       disabled={
                         !formData.name ||
@@ -569,6 +560,7 @@ const User = () => {
                         !formData.designationId ||
                         !!errors.email ||
                         !!errors.contactNumber ||
+                        !formData.userModule.length||
                         !roleId
                       }
                     >
