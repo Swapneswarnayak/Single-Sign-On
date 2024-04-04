@@ -22,7 +22,6 @@ export default function SimpleSlide() {
 
   const tokenStr: any = auth.user?.data;
 
-
   const getModuleandRoles = async () => {
     try {
       let fetchedData: any = await axios.get(
@@ -32,7 +31,6 @@ export default function SimpleSlide() {
         }
       );
       setModuleList(fetchedData.data.data);
-
     } catch (err: any) {
       console.error(err);
     }
@@ -77,15 +75,13 @@ export default function SimpleSlide() {
     } catch (err: any) {
       console.error(err, "error");
     }
-  }; 
+  };
 
   React.useEffect(() => {
     getModuleandRoles();
   }, [tokenStr]);
 
-
-  console.log(moduleList,"ModuleLIst")
-
+  console.log(moduleList, "ModuleLIst");
 
   return (
     <Box
@@ -132,9 +128,7 @@ export default function SimpleSlide() {
                         {el.name}
                       </Typography>
                       <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                        A UPSC gate pass grants access for Employees and
-                        Officers, containing Employees/Officers details for
-                        secure entry into UPSC premises.
+                        {el.moduleInfo}
                       </Typography>
                     </CardContent>
                     <CardActions>

@@ -24,6 +24,7 @@ const Sidebar = ({
   const sidebarWidth = "250px";
 
   const auth: any = useAuth();
+  console.log(auth, "authorr");
 
   const roleID = auth?.user?.data?.user?.role;
 
@@ -35,7 +36,7 @@ const Sidebar = ({
     return (
       <Box
         sx={{
-          width: {xs:sidebarWidth, md: "250px"},
+          width: { xs: sidebarWidth, md: "250px" },
           flexShrink: 0,
         }}
       >
@@ -45,7 +46,7 @@ const Sidebar = ({
           variant="permanent"
           PaperProps={{
             sx: {
-              width: {xs:sidebarWidth, md: "250px"},
+              width: { xs: sidebarWidth, md: "250px" },
               boxSizing: "border-box",
             },
           }}
@@ -63,7 +64,7 @@ const Sidebar = ({
                 </Typography>
               </Box>
               <Typography my={1} variant="h6">
-                Super Admin
+                Single Sign On
               </Typography>
             </Box>
 
@@ -92,14 +93,13 @@ const Sidebar = ({
       {/* ------------------------------------------- */}
       {/* Logo */}
       {/* ------------------------------------------- */}
-  
-        <Box px={2}>
-          <Box textAlign={"center"} marginY={2} px={3}>
-            <h3>Single Sign On PANEL</h3>
-            <h3>Super Admin</h3>
-          </Box>
+
+      <Box px={2}>
+        <Box textAlign={"center"} marginY={2} px={3}>
+          <h3>Single Sign On PANEL</h3>
+          <h3>Super Admin</h3>
         </Box>
-    
+      </Box>
 
       {/* ------------------------------------------- */}
       {/* Sidebar For Mobile */}

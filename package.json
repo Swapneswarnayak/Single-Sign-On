@@ -1,11 +1,11 @@
 {
-  "name": "modernize-next-free",
+  "name": "SSO-UI",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start --port 3011",
+    "start": "next start --port 3000",
     "lint": "next lint"
   },
   "dependencies": {

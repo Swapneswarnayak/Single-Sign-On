@@ -87,6 +87,7 @@ function EmpLogin({ back }: any) {
   const [captchaSvg, setCaptchaSvg] = useState("");
   const [captchaToken, setCaptchaToken] = useState("");
   const [capchaCode, setCapchaCode] = useState("");
+  const [loginthroughpass, setLoginthroughpass] = useState(true);
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
@@ -96,6 +97,13 @@ function EmpLogin({ back }: any) {
   // useEffect(() => {
   //   SetCaptchaCode(Math.random().toString(36).substr(2, 6));
   // }, []);
+
+  const sendOtp = async () => {
+    try {
+    } catch (err: any) {
+      console.log(err, "error");
+    }
+  };
 
   const loginUser = async () => {
     if (password == "" || capchaCode == "") {
@@ -275,12 +283,15 @@ function EmpLogin({ back }: any) {
         </Box>
         <Box>
           <Typography variant="body1" sx={{ lineHeight: "9px" }}>
-            User Name
+            {loginthroughpass ? "Email Id" : "Email / Phone No."}
           </Typography>
+
           <OutlinedInput
             // id="outlined-adornment-weight"
             type={"email"}
-            placeholder="Enter Email Id"
+            placeholder={
+              loginthroughpass ? "Enter Email Id" : "Enter Email/PhoneNo."
+            }
             size="small"
             value={email}
             sx={{
@@ -291,36 +302,85 @@ function EmpLogin({ back }: any) {
             }}
             onChange={(e: any) => setEmail(e.target.value)}
           />
+          {!loginthroughpass && (
+            <Typography
+              variant="body1"
+              sx={{
+                lineHeight: "9px",
+                textAlign: "right",
+              }}
+            >
+              OTP will send on this email / phone No.
+            </Typography>
+          )}
+          {loginthroughpass && (
+            <>
+              <Typography variant="body1" sx={{ lineHeight: "9px", mt: 1 }}>
+                Password
+              </Typography>
 
-          <Typography variant="body1" sx={{ lineHeight: "9px", mt: 1 }}>
-            Password
-          </Typography>
+              <OutlinedInput
+                // id="outlined-adornment-weight"
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                size="small"
+                value={password}
+                sx={{
+                  width: "100%",
+                  background: "white",
+                  marginBottom: "8px",
+                  mt: 2,
+                }}
+                onChange={(e: any) => setPassword(e.target.value)}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                    >
+                      {!showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+            </>
+          )}
 
-          <OutlinedInput
-            // id="outlined-adornment-weight"
-            type={showPassword ? "text" : "password"}
-            placeholder="Password"
-            size="small"
-            value={password}
+          <Typography sx={{ mb: 1 }}>Login through</Typography>
+          <Box
             sx={{
-              width: "100%",
-              background: "white",
-              marginBottom: "8px",
-              mt: 2,
+              display: "flex",
+              border: "2px solid green",
+              width: "fit-content",
+              cursor: "pointer",
             }}
-            onChange={(e: any) => setPassword(e.target.value)}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                >
-                  {!showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-          />
+          >
+            <Typography
+              sx={{
+                p: 1,
+                cursor: "pointer",
+                backgroundColor: loginthroughpass ? "green" : "",
+              }}
+              onClick={() => {
+                setLoginthroughpass(true);
+              }}
+            >
+              Password
+            </Typography>
+            <Typography
+              sx={{
+                p: 1,
+                cursor: "pointer",
+                backgroundColor: !loginthroughpass ? "green" : "",
+              }}
+              onClick={() => {
+                setLoginthroughpass(false);
+              }}
+            >
+              OTP
+            </Typography>
+          </Box>
           <Box
             sx={{
               width: "500px",
@@ -394,13 +454,23 @@ function EmpLogin({ back }: any) {
             ></TextField>
           </Box>
 
-          <LoginButton
-            onClick={loginUser}
-            size="small"
-            sx={{ fontSize: "15px", py: 1, width: "100%", mt: 2 }}
-          >
-            Login
-          </LoginButton>
+          {loginthroughpass ? (
+            <LoginButton
+              onClick={loginUser}
+              size="small"
+              sx={{ fontSize: "15px", py: 1, width: "100%", mt: 2 }}
+            >
+              Login
+            </LoginButton>
+          ) : (
+            <LoginButton
+              onClick={sendOtp}
+              size="small"
+              sx={{ fontSize: "15px", py: 1, width: "100%", mt: 2 }}
+            >
+              Send OTP
+            </LoginButton>
+          )}
 
           <Box
             sx={{
